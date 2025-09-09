@@ -33,8 +33,8 @@ void test_for_decoder(){
 
         PORTE = 0b10;
 
-        //PORTC = 0b00000111;  //ADC
-        PORTC = 0b00001111; //SRAM
+        PORTC = 0b00000111;  //ADC
+        //PORTC = 0b00001111; //SRAM
 
         PORTE = 0b00;
 

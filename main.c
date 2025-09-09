@@ -31,9 +31,9 @@ int main(void) {
         //test_for_latch();
     //}
 
-    //SRAM_init();
-    //SRAM_test();
+    SRAM_init();
+    SRAM_test();
 
-    test_for_decoder();
+    //test_for_decoder();
     
 }
