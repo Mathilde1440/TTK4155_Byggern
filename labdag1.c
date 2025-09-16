@@ -1,9 +1,6 @@
-#include <avr/io.h>
-#include <util/delay.h>
-#include "uart.h"
-#include "sram.h"
-#include <stdio.h>
+
 #include "labdag1.h"
+#include <util/delay.h>
 
 
 

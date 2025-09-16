@@ -7,6 +7,9 @@
 #include <stdio.h>
 #include "labdag1.h"
 #include "labdag2.h"
+#include "labdag3.h"
+#include "joystick.h"
+#include "adc.h"
 
 
 
@@ -17,6 +20,7 @@
 
 
 int main(void) {
+    ADC_read(0x0000);
     
     
 
@@ -32,8 +36,32 @@ int main(void) {
     //}
 
     SRAM_init();
-    SRAM_test();
+    //SRAM_test();
+    clk_adc_init();
+    //while(1){
+        //_delay_ms(2000);
+        //adc_kick();
+        
+        //volatile v = adc_read0();
+        //_delay_ms(2000);
+        //void(v);
+        
+    //}
+    IO_BOARD testobject;
+    JOYSTICK_DIRECTION dir;
 
-    //test_for_decoder();
+    while (1)
+    {
+     testobject = read_analog_values_dir_IO();
+     testobject = convert_position_percent(testobject);
+     dir = get_JS_DIR(testobject);
+     test_function_JS(dir);
+
+     _delay_ms(2000);
+     
+    }
+    
+
+    
     
 }
