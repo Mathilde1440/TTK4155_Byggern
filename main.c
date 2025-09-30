@@ -10,6 +10,8 @@
 #include "labdag3.h"
 #include "joystick.h"
 #include "adc.h"
+#include "SPI.h"
+
 
 
 
@@ -21,47 +23,19 @@
 
 int main(void) {
     ADC_read(0x0000);
-    
-    
-
     USART_Init(MYUBRR);
-
-    //while (1){
-    
-        //test_med_echo();
-     
-        //printf("ing");  //printf
-
-        //test_for_latch();
-    //}
-
     SRAM_init();
-    //SRAM_test();
     clk_adc_init();
-    //while(1){
-        //_delay_ms(2000);
-        //adc_kick();
-        
-        //volatile v = adc_read0();
-        //_delay_ms(2000);
-        //void(v);
-        
-    //}
-    IO_BOARD testobject;
-    JOYSTICK_DIRECTION dir;
 
-    while (1)
-    {
-     testobject = read_analog_values_dir_IO();
-     testobject = convert_position_percent(testobject);
-     dir = get_JS_DIR(testobject);
-     test_function_JS(dir);
+    SPI_init();
+    //slave_select_test_OLED();
+    //slave_select_test_IO();
+    //DC_select_test();
+    //oled_init();
+    //light_of(3);
+    //flashing_lights_2();
+    //flashing_lights();
+    flashing_lights_3();
 
-     _delay_ms(2000);
-     
-    }
-    
-
-    
     
 }

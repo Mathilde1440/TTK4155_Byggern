@@ -7,7 +7,7 @@ void SRAM_init(){
     //MCUCSR |= (1<<JTD);
     MCUCR |= (1 << SRE);
     //SFIOR |= (1<<XMM2);
-    SFIOR = 0b100;
+    SFIOR |= 0b100;
 }
 
 void SRAM_test(void)

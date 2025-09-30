@@ -1,5 +1,6 @@
 #include "labdag2.h"
 #include <util/delay.h>
+#include "adc.h"
 
 
 

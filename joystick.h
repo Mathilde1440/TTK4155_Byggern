@@ -11,10 +11,10 @@
 
 
 #define NUM_CHANNELS_ADC 4
-#define JOYSTICK_DIR_X 0
-#define JOYSTICK_DIR_Y 1
-#define TOUCHPAD_DIR_X 2
-#define TOUCHPAD_DIR_Y 3
+#define JOYSTICK_DIR_X 0       //Joystick_X koblet til AIN3
+#define JOYSTICK_DIR_Y 1        //Joystick_Y koblet til AIN2
+#define TOUCHPAD_DIR_X 2        //Touchpad_x koblet til AIN1
+#define TOUCHPAD_DIR_Y 3        //Touchpad_y koblet til AIN0
 
 
 typedef struct {
@@ -22,6 +22,13 @@ typedef struct {
     uint8_t Y_JS;
     uint8_t X_TP;
     uint8_t Y_TP;
+
+    int8_t X_JS_PRC;
+    int8_t Y_JS_PRC;
+    int8_t X_TP_PRC;
+    int8_t Y_TP_PRC;
+
+
 } IO_BOARD;
 
 typedef enum {
@@ -35,4 +42,20 @@ typedef enum {
 IO_BOARD read_analog_values_dir_IO();
 IO_BOARD convert_position_percent(IO_BOARD IO_BOARD_obj);
 JOYSTICK_DIRECTION get_JS_DIR(IO_BOARD IO_BOARD_obj);
+
+
+
+JOYSTICK_DIRECTION get_JS_DIR_first(IO_BOARD IO_BOARD_obj);
+
+JOYSTICK_DIRECTION get_JS_DIR(IO_BOARD IO_BOARD_obj);
+JOYSTICK_DIRECTION get_TP_DIR(IO_BOARD IO_BOARD_obj);
+
+
 void test_function_JS(JOYSTICK_DIRECTION direction);
+void test_function_TP(JOYSTICK_DIRECTION direction);
+
+
+void joystic_test();
+
+//uint8_t* ADC_read_testing();
+

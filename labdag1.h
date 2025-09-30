@@ -1,5 +1,5 @@
-#ifndef LABDAG3_H
-#define LABDAG3_H
+#ifndef LABDAG1_H
+#define LABDAG1_H
 #include <avr/io.h>
 
 #include "uart.h"
