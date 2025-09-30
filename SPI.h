@@ -28,8 +28,8 @@ void slave_select_test_IO();
 void DC_select_test();
 
 
-void light_on(int LED_N);
-void light_of(int LED_N);
+void turn_light_on(int LED_N);
+void turn_light_of(int LED_N);
 void flashing_lights();
 void flashing_lights_2();
 void flashing_lights_3();

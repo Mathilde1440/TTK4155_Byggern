@@ -11,7 +11,7 @@
 
 typedef struct {
     int line;
-    int colum;
+    int column;
 } OLED_POS_HOLDER;
 
 typedef enum {
@@ -23,12 +23,20 @@ typedef enum {
 } ADDRESSING_MODES;
 
 //define write commands
-void writeCOMMAND(uint8_t command);
-void writeCOMMAND_SERIES(uint8_t command, uint)
-void write_DATA();
+void write_COMMAND(uint8_t command);
+void write_COMMAND_1arg(uint8_t command, uint8_t arg1);
+void write_COMMAND_2arg(uint8_t command, uint8_t arg1, uint8_t arg2);
+
+
+void write_DATA(uint8_t data);
+
 
 
 void oled_init();
+void oled_init_2();
+void oled_clean(); //this might cover reset?
+void oled_anti_clean();
+
 
 void set_addressing_mode(ADDRESSING_MODES mode);
 

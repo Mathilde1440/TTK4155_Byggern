@@ -130,28 +130,34 @@ void DC_select_test()
     
 }
 
-void light_on(int LED_N){
+void turn_light_on(int LED_N){
     Slave_select(IO_board_SS);
-    _delay_us(2);  
     SPI_write(0x05);
-    _delay_us(40); 
+
+    _delay_us(40); //specified in the data sheet, minimum 40 mus between command byte and data byte
+
     SPI_write(LED_N);
+    _delay_us(2); //Spesified in data sheet, needs at least 20mus between two data bytes
     SPI_write(0x001);
-    _delay_us(2);  
+    _delay_us(2);  //safeeguard, do not know if it is needed
+
     Reset_slave_select(IO_board_SS);   
-    _delay_us(50);  
+    _delay_us(40);  //attempt at resolving timin-issue, do not know if this is nescessary
 
 }
-void light_of(int LED_N){
+void turn_light_of(int LED_N){
     Slave_select(IO_board_SS);
-    _delay_us(2);  
     SPI_write(0x05);
-    _delay_us(40); 
+
+    _delay_us(40); //specified in the data sheet, minimum 40 mus between command byte and data byte
+
     SPI_write(LED_N);
+    _delay_us(2); 
     SPI_write(0x000);
-    _delay_us(2);  
+    _delay_us(2);  //safeguard, do not know if it is needed
+
     Reset_slave_select(IO_board_SS);
-    _delay_us(50);  
+    _delay_us(40);  
     
 }
 
@@ -185,10 +191,10 @@ void flashing_lights()
 void flashing_lights_2(){
 
     while(1){
-        light_on(3);
+        turn_light_on(3);
 
         _delay_ms(500);
-        light_of(3);
+        turn_light_of(3);
         _delay_ms(1000);
     }
 
@@ -201,12 +207,12 @@ void flashing_lights_3(){
     while(1){
         for(int i = 0; i < 6; i++)
         {
-            light_on(i);
+            turn_light_on(i);
             _delay_ms(1000);
         }
         for(int j = 0; j < 6; j++)
         {
-            light_of(j);
+            turn_light_of(j);
             _delay_ms(1000);
         }
 

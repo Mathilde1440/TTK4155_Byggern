@@ -11,6 +11,7 @@
 #include "joystick.h"
 #include "adc.h"
 #include "SPI.h"
+#include "oled.h"
 
 
 
@@ -28,11 +29,13 @@ int main(void) {
     clk_adc_init();
 
     SPI_init();
+    //oled_init_2();
+    //oled_clean();
     //slave_select_test_OLED();
     //slave_select_test_IO();
     //DC_select_test();
     //oled_init();
-    //light_of(3);
+    //turn_light_on(2);
     //flashing_lights_2();
     //flashing_lights();
     flashing_lights_3();
