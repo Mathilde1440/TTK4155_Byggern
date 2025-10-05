@@ -218,3 +218,13 @@ void flashing_lights_3(){
 
 }
 }
+
+void clear_all_lights(){
+
+    for(int j = 0; j < 6; j++)
+    {
+        turn_light_of(j);
+        _delay_ms(1000);
+    }
+
+}

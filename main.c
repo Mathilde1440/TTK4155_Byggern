@@ -29,8 +29,17 @@ int main(void) {
     clk_adc_init();
 
     SPI_init();
-    //oled_init_2();
-    //oled_clean();
+    oled_init_2();
+    oled_anti_clean();
+    _delay_ms(1000);
+    oled_clear_column(3);
+    _delay_ms(1000);
+    _delay_ms(1000);
+    oled_reset();
+
+
+
+
     //slave_select_test_OLED();
     //slave_select_test_IO();
     //DC_select_test();
@@ -38,7 +47,8 @@ int main(void) {
     //turn_light_on(2);
     //flashing_lights_2();
     //flashing_lights();
-    flashing_lights_3();
+    //flashing_lights_3();
+    //clear_all_lights();
 
     
 }

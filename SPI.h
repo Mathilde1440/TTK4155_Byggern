@@ -33,6 +33,7 @@ void turn_light_of(int LED_N);
 void flashing_lights();
 void flashing_lights_2();
 void flashing_lights_3();
+void clear_all_lights();
 
 
 #endif

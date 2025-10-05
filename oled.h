@@ -48,6 +48,7 @@ void oled_reset();
 void oled_home();
 
 void oled_clear_line(uint8_t line);
+void oled_clear_column(uint8_t column);
 
 void oled_print(char*);
 

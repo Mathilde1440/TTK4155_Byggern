@@ -6,7 +6,7 @@
 volatile OLED_POS_HOLDER current_oled_pos;
 
 
-
+// direct copy of the handout
 
 void oled_init()
 {
@@ -34,6 +34,7 @@ void oled_init()
     write_COMMAND(0xaf);  // display on
 
 }
+// slightly alterd copy of the handout
 
 void oled_init_2()
 {
@@ -53,7 +54,7 @@ void oled_init_2()
     write_COMMAND(0xaf);  // display on
 }
 
-void oled_clean(){
+void oled_clean(){ //This might actally fill the function for oled reset
     for (uint8_t line = 0; line < 8; line++){
         int address = (0xB0 | line);
         write_COMMAND(address);
@@ -151,15 +152,18 @@ void set_addressing_mode(ADDRESSING_MODES mode){ //This is probobly not function
 
 void oled_goto_line(uint8_t line)
 {
-    if ( (line < 8)){ //Guard to prevent out of bounds
+    if ( (line < 8)){ //Guard to prevent out of bounds, since we are using uint there should be no need for a guard below zero
         current_oled_pos.line = line;
         write_COMMAND(0xB0 | line);
+
+        //int address = (0xB0 | line);
+        //write_COMMAND(address);
     }
 
 }
 void oled_goto_column(uint8_t column)
 {
-    if ( (column < 128)) // Guard to ensure there is no issue with the bouderies
+    if ( (column < 128)) // Guard to ensure there is no issue with the bouderies, since we are using uint there should be no need for a guard below zero
 
     {
         current_oled_pos.column = column;
@@ -167,8 +171,6 @@ void oled_goto_column(uint8_t column)
         int end = column / 16;
         write_COMMAND(0x00 | start);
         write_COMMAND(0x10 | end);
-
-        //write_COMMAND()
     }
 
 }
@@ -180,6 +182,10 @@ void oled_pos(uint8_t row, uint8_t column)
 
 void oled_reset()
 {
+    oled_pos(0,0);
+    for (uint8_t line; line < 8; line++){
+        oled_clear_line(line);
+    }
 
 }
 void oled_home()
@@ -191,8 +197,22 @@ void oled_home()
 void oled_clear_line(uint8_t line)
 {
     oled_goto_line(line);
-    
+    oled_goto_column(0);
 
+    for (int col = 0; col < 128; col++)
+    {
+    //oled_goto_column(col);
+        write_DATA(0x00);
+
+    }
+}
+void oled_clear_column(uint8_t column){
+    oled_goto_column(column);
+    for (uint8_t line = 0; line < 8; line++){
+        oled_pos(line,column);
+        write_DATA(0x00);
+    }
+    
 }
 
 //void oled_print(char*)
