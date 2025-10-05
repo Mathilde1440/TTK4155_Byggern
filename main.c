@@ -31,11 +31,16 @@ int main(void) {
     SPI_init();
     oled_init_2();
     oled_anti_clean();
-    _delay_ms(1000);
-    oled_clear_column(3);
-    _delay_ms(1000);
-    _delay_ms(1000);
-    oled_reset();
+    //_delay_ms(1000);
+    oled_clear_line(1);
+    //_delay_ms(1000);
+    //_delay_ms(1000);
+    //oled_reset();
+    //oled_change_font_size(FONT_SIZE_NORMAL);
+    //oled_write_string("Hei", 3,30);
+    //oled_test_scrolling_font();
+    oled_set_color(0x7F);
+    //oled_fill_line_color(3, 100);
 
 
 

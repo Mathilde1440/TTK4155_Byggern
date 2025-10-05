@@ -10,9 +10,10 @@
  
 
 typedef struct {
-    int line;
-    int column;
-} OLED_POS_HOLDER;
+    uint8_t line;
+    uint8_t column;
+    int font_size;
+} OLED_STATE_OBJ;
 
 typedef enum {
     HORIZONTAL,
@@ -21,6 +22,14 @@ typedef enum {
     INVALID
 
 } ADDRESSING_MODES;
+
+
+typedef enum {
+    FONT_SIZE_SMALL,
+    FONT_SIZE_NORMAL,
+    FONT_SIZE_LARGE
+
+} FONT_SIZE;
 
 //define write commands
 void write_COMMAND(uint8_t command);
@@ -48,8 +57,17 @@ void oled_reset();
 void oled_home();
 
 void oled_clear_line(uint8_t line);
+void oled_fill_line_color(uint8_t line,uint8_t color);
 void oled_clear_column(uint8_t column);
 
-void oled_print(char*);
+void oled_change_font_size(FONT_SIZE size);
+void oled_set_color(uint8_t color);
+
+void oled_write_string(char* string, uint8_t line,  uint8_t column);
+void oled_INV_write_string(char* string, uint8_t line,  uint8_t column);
+void oled_print(char* data);
+
+void oled_test_scrolling_font();
+
 
 #endif

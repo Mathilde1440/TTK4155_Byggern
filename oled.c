@@ -1,9 +1,15 @@
 #include "oled.h"
 #include "SPI.h"
+#include "fonts.h"
+#include <avr/pgmspace.h>
+#include <util/delay.h>
 
 
+uint8_t current_line = 0;
+uint8_t current_column = 0;
+int current_font_size = 5;
+uint8_t current_color = 0;
 
-volatile OLED_POS_HOLDER current_oled_pos;
 
 
 // direct copy of the handout
@@ -52,6 +58,7 @@ void oled_init_2()
     write_COMMAND(0xa4); // out follows RAM content
     write_COMMAND(0xa6); // set normal display
     write_COMMAND(0xaf);  // display on
+    oled_pos(0,0);
 }
 
 void oled_clean(){ //This might actally fill the function for oled reset
@@ -152,26 +159,36 @@ void set_addressing_mode(ADDRESSING_MODES mode){ //This is probobly not function
 
 void oled_goto_line(uint8_t line)
 {
-    if ( (line < 8)){ //Guard to prevent out of bounds, since we are using uint there should be no need for a guard below zero
-        current_oled_pos.line = line;
-        write_COMMAND(0xB0 | line);
+    uint8_t wrap_line = line;
+    if (line > 7)
+    {
+        wrap_line = line - 7;
+    }
+    //if ( (line < 8)){ //Guard to prevent out of bounds, since we are using uint there should be no need for a guard below zero
+
+        current_line= wrap_line;
+        write_COMMAND(0xB0 | wrap_line);
 
         //int address = (0xB0 | line);
         //write_COMMAND(address);
-    }
+    //}
 
 }
 void oled_goto_column(uint8_t column)
 {
-    if ( (column < 128)) // Guard to ensure there is no issue with the bouderies, since we are using uint there should be no need for a guard below zero
+    //if ( (column < 128)) // Guard to ensure there is no issue with the bouderies, since we are using uint there should be no need for a guard below zero
+    uint8_t wrap_column = column;
+    if (column > 127){
+        wrap_column = column -127;
+    }
 
-    {
-        current_oled_pos.column = column;
-        int start = column % 16;
-        int end = column / 16;
+    //{
+        current_column = wrap_column ;
+        int start = wrap_column  % 16;
+        int end = wrap_column  / 16;
         write_COMMAND(0x00 | start);
         write_COMMAND(0x10 | end);
-    }
+    //}
 
 }
 void oled_pos(uint8_t row, uint8_t column)
@@ -183,7 +200,7 @@ void oled_pos(uint8_t row, uint8_t column)
 void oled_reset()
 {
     oled_pos(0,0);
-    for (uint8_t line; line < 8; line++){
+    for (uint8_t line = 0; line < 8; line++){
         oled_clear_line(line);
     }
 
@@ -206,6 +223,20 @@ void oled_clear_line(uint8_t line)
 
     }
 }
+
+void oled_fill_line_color(uint8_t line, uint8_t color)
+{
+    oled_goto_line(line);
+    oled_goto_column(0);
+
+    for (int col = 0; col < 128; col++)
+    {
+    //oled_goto_column(col);
+        write_DATA(color);
+
+    }
+}
+
 void oled_clear_column(uint8_t column){
     oled_goto_column(column);
     for (uint8_t line = 0; line < 8; line++){
@@ -214,5 +245,96 @@ void oled_clear_column(uint8_t column){
     }
     
 }
+void oled_set_color(uint8_t color){
+    current_color = color;
+}
 
-//void oled_print(char*)
+void oled_change_font_size(FONT_SIZE size)
+{
+    switch (size)
+    {
+    case FONT_SIZE_SMALL:
+        current_font_size = 4;
+        break;
+
+    case FONT_SIZE_NORMAL:
+        current_font_size = 5;
+        break;
+
+    case FONT_SIZE_LARGE:
+        current_font_size = 8;
+        break;
+    
+    default:
+        break;
+    }
+}
+void oled_write_string(char* string, uint8_t line,  uint8_t column){
+    oled_pos(line, column);
+    uint8_t counter = 0;
+
+    //uint8_t char_to_print = *string-32;
+    oled_anti_clean();
+    while(*string){
+        uint8_t increment = *string++;
+    
+        if ((increment>= 32) && (increment <= 127)){
+                uint8_t char_to_print = increment-32;
+            switch (current_font_size)
+            {
+            case 4:
+            oled_pos(line, current_column);
+                for(int i = 0; i < 4; i++)
+                {
+                    
+                    write_DATA(~pgm_read_byte(&font4[char_to_print][i]));
+
+                }
+                 current_column += (4+1);
+                break;
+            case 5:
+            oled_pos(line, current_column);
+                for(int i = 0; i < 5; i++)
+                {
+                    write_DATA(~pgm_read_byte(&font5[char_to_print][i]));
+            
+                 
+                }
+                current_column += (5+1);
+                break;
+            case 8:
+            oled_pos(line, current_column);
+                for(int i = 0; i < 8; i++)
+                {
+                    write_DATA(~pgm_read_byte(&font8[char_to_print][i]));
+                   
+
+                }
+                 current_column += (8+1);
+                break;
+
+            default:
+                break;
+            }
+        }
+    }
+}
+
+void oled_INV_write_string(char* string, uint8_t line,  uint8_t column){
+
+}
+
+void oled_print(char* data){
+   
+}
+
+void oled_test_scrolling_font(){
+    uint8_t count = 0;
+    while(1){
+
+        oled_write_string("Hei",3, count );
+        count++;
+
+    }
+}
+
