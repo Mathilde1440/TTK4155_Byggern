@@ -59,6 +59,7 @@ void oled_init_2()
     write_COMMAND(0xa6); // set normal display
     write_COMMAND(0xaf);  // display on
     oled_pos(0,0);
+     oled_anti_clean();
 }
 
 void oled_clean(){ //This might actally fill the function for oled reset
@@ -274,7 +275,7 @@ void oled_write_string(char* string, uint8_t line,  uint8_t column){
     uint8_t counter = 0;
 
     //uint8_t char_to_print = *string-32;
-    oled_anti_clean();
+   
     while(*string){
         uint8_t increment = *string++;
     

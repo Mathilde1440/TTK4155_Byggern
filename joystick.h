@@ -1,12 +1,9 @@
-
+#ifndef JOYSTICK_H
+#define JOYSTICK_H
 
 #include <avr/io.h>
 #include <util/delay.h>
-#include "uart.h"
-#include "sram.h"
-#include <stdio.h>
-#include "labdag1.h"
-#include "labdag2.h"
+
 //#include "labdag3.h"
 
 
@@ -49,6 +46,7 @@ JOYSTICK_DIRECTION get_JS_DIR_first(IO_BOARD IO_BOARD_obj);
 
 JOYSTICK_DIRECTION get_JS_DIR(IO_BOARD IO_BOARD_obj);
 JOYSTICK_DIRECTION get_TP_DIR(IO_BOARD IO_BOARD_obj);
+int JS_button_pressed();
 
 
 void test_function_JS(JOYSTICK_DIRECTION direction);
@@ -58,4 +56,5 @@ void test_function_TP(JOYSTICK_DIRECTION direction);
 void joystic_test();
 
 //uint8_t* ADC_read_testing();
+#endif
 

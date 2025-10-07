@@ -1,5 +1,10 @@
 #include "joystick.h"
 #include "adc.h"
+#include "uart.h"
+#include "sram.h"
+#include <stdio.h>
+#include "labdag1.h"
+#include "labdag2.h"
 
 
 
@@ -164,6 +169,12 @@ JOYSTICK_DIRECTION get_TP_DIR(IO_BOARD IO_BOARD_obj)
     return direction;
 
 }
+
+int JS_button_pressed(){
+    return !( PINB & (1 << PB1));
+}
+
+
 
 void test_function_JS(JOYSTICK_DIRECTION direction){
 
