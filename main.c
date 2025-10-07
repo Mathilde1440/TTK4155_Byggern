@@ -12,6 +12,9 @@
 #include "adc.h"
 #include "SPI.h"
 #include "oled.h"
+#include "menu_interface.h"
+#include "CAN_controller.h"
+
 
 
 
@@ -27,33 +30,28 @@ int main(void) {
     USART_Init(MYUBRR);
     SRAM_init();
     clk_adc_init();
-
     SPI_init();
     oled_init_2();
-    oled_anti_clean();
-    //_delay_ms(1000);
-    oled_clear_line(1);
-    //_delay_ms(1000);
-    //_delay_ms(1000);
-    //oled_reset();
-    //oled_change_font_size(FONT_SIZE_NORMAL);
-    //oled_write_string("Hei", 3,30);
-    //oled_test_scrolling_font();
-    oled_set_color(0x7F);
-    //oled_fill_line_color(3, 100);
+    oled_reset();
+    CAN_init();
+    //CAN_controller_reset();
+    //_delay_ms(10);
+    //slave_select_test_CAN_2();
+    //CAN_change_mode(MODE_LOOPBACK);
+    //test_base_commands();
+    //can_setup_loopback(void);
+    //test_can_controller_reset();
+    //test_RTS();
+    //test_bit_modify();
+
+
+    //CAN_controller_reset();
+    _delay_ms(2);
 
 
 
 
-    //slave_select_test_OLED();
-    //slave_select_test_IO();
-    //DC_select_test();
-    //oled_init();
-    //turn_light_on(2);
-    //flashing_lights_2();
-    //flashing_lights();
-    //flashing_lights_3();
-    //clear_all_lights();
+
 
     
 }

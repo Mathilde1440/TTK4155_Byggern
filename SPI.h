@@ -10,6 +10,7 @@
 
 #define OLED_SS 0
 #define IO_board_SS 1
+#define MCP2515_SS 2
 #define RW_COMMAND 0
 #define RW_DATA 1
 
@@ -25,6 +26,7 @@ uint8_t SPI_read();
 //test functions
 void slave_select_test_OLED();
 void slave_select_test_IO();
+void slave_select_test_CAN();
 void DC_select_test();
 
 

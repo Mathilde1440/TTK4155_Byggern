@@ -5,6 +5,10 @@
 
 void SPI_init(){
     //conigure all in- and output pins
+    DDRB |= (1 << PB0); // set slave select MCP2515 as an output
+    //PORTB |= (1 << PB0);
+    DDRB &= ~(1<< PB1); //set joystick button as input
+    PORTB |= (1 << PB1); //activate internal pullup //maybe do this for the rest
     DDRB |= (1 << PB2);
     DDRB |= (1 << PB4); // set slave salect OLED as an Output 
     DDRB |= (1 << PB3); // set slave salect IO_board as an Output 
@@ -12,11 +16,14 @@ void SPI_init(){
     DDRB &= ~(1<< PB6); 
     DDRB |= (1 << PB7); 
 
+    DDRD &= ~(1 << PD2); //set interupt for MCP2515 to input
+
     SPCR &= ~(1 << CPOL);
     SPCR &= ~(1 << CPHA);
 
     Reset_slave_select(OLED_SS); // Precaution, makes sure no salve is selectet 
     Reset_slave_select(IO_board_SS);
+    Reset_slave_select(MCP2515_SS);
     set_DC(0); // somhow this only works when tis is set in the init function. Does not matter if it is set to zero or 1
   
 
@@ -38,15 +45,21 @@ void SPI_init(){
 void Slave_select(int n){
     switch (n)
     {
-    case 0: // set SS to zero for the Oled display, and chooses the OLed display as the salev
+    case 0: // set SS to zero for the Oled display, and chooses the OLed display as the slave
         PORTB &= ~(1 << PB4); 
-        PORTB |= (1 << PB3); 
+        PORTB |= (1 << PB3); //Forces the othe SS high-> avoid short circuiting
+        PORTB |= (1 << PB0); //Forces the othe SS high-> avoid short circuiting by
         break;
-    case 1: // set SS to zero for the Oled display, and chooses the OLed display as the salev
+    case 1: // set SS to zero for the IO board, and chooses the OLed display as the slave
         PORTB &= ~(1 << PB3); 
-        PORTB |= (1 << PB4); 
+        PORTB |= (1 << PB0); //Forces the othe SS high-> avoid short circuiting by
+        PORTB |= (1 << PB4); //Forces the othe SS high-> avoid short circuiting by
         break;
-    
+    case 2: // set SS to zero for the MCP2515, and chooses the MCP2515 as the slave
+        PORTB &= ~(1 << PB0); 
+        PORTB |= (1 << PB3); //Forces the othe SS high-> avoid short circuiting by
+        PORTB |= (1 << PB4);  //Forces the othe SS high-> avoid short circuiting by
+        break;
     default:
         break;
     }
@@ -58,10 +71,14 @@ void Reset_slave_select(int n){
     case 0: // set SS to zero for the Oled display, and chooses the OLed display as the salev
         PORTB |= (1 << PB4); 
         break;
+
     case 1: // set SS to zero for the Oled display, and chooses the OLed display as the salev
         PORTB |= (1 << PB3); 
-        break;    
-    
+        break;  
+
+    case 2: // set SS to one for the MCP2515, and disables slave
+        PORTB |= (1 << PB0); 
+        break;     
     default:
         break;
     }
@@ -116,6 +133,16 @@ void slave_select_test_IO()
         _delay_ms(10000);
     }
     
+}
+
+void slave_select_test_CAN()
+{
+    while(1){
+        Slave_select(MCP2515_SS);
+        _delay_ms(10000);
+        Reset_slave_select(MCP2515_SS);
+        _delay_ms(10000);  
+    }
 }
 
 void DC_select_test()
