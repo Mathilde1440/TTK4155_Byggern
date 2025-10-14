@@ -185,7 +185,7 @@ typedef struct {
 //CAN functions
 void CAN_init(uint8_t mode);
 void CAN_transmit(CAN_MESSAGE_FRAME* message);
-void CAN_recieve(CAN_MESSAGE_FRAME* message);
+uint8_t CAN_recieve(CAN_MESSAGE_FRAME* message);
 
 //MCP controller functions
 uint8_t CAN_controller_read(uint8_t address);
