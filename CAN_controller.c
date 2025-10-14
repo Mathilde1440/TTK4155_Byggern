@@ -142,6 +142,8 @@ void CAN_controller_reset()
 
     Reset_slave_select(MCP2515_SS);
 
+    _delay_ms(10);
+
 }
 
 uint8_t CAN_controller_read_status()
@@ -206,104 +208,7 @@ void slave_select_test_CAN_2()
 
 //TEST RTS
 
-void test_RTS(){
-    uint8_t control_value = CAN_controller_read(MCP_TXB0CTRL);
-    uint8_t control_negative = (( control_value & (1 << 3 )));
-    if (control_negative == 0 ){
-        printf("RTS correct init value \n\r");
-    }
-    else{
-        printf("RTS incorrect init value \n\r");
-    }
 
-    uint8_t value = CAN_controller_read(MCP_TXB0CTRL);
-
-
-    uint8_t control = (( value & (1 << 3 )));
-    if (control != 0 ){
-        printf("RTS test success\n\r");
-    }
-    else{
-        printf("RTS test is failed\n\r");
-
-    }
-
-
-}
-
-
-void test_bit_modify(){
-    uint8_t befor_test = CAN_controller_read(MCP_CANCTRL);
-    uint8_t init_value = (( befor_test & (1 << 1 )));
-    if (init_value == 0 ){
-        printf("Init value = %i \n\r", 0);
-    }
-    else{
-        printf("Init value = %i \n\r", 1);
-    }
-
-    CAN_controller_bit_modify(MCP_CANCTRL, 1,1);
-
-    uint8_t after_test_1 = CAN_controller_read(MCP_CANCTRL);
-    uint8_t value_after_1 = (( after_test_1 & (1 << 1 )));
-    if (value_after_1 == 0 ){
-        printf("Value after 1. test = %i \n\r", 0);
-    }
-    else{
-        printf("Value after 1. test  = %i \n\r", 1);
-    }
-
-    CAN_controller_bit_modify(MCP_CANCTRL, 0,1);
-
-    uint8_t after_test_2 = CAN_controller_read(MCP_CANCTRL);
-    uint8_t value_after_2 = (( after_test_2& (1 << 1 )));
-    if (value_after_2 == 0 ){
-        printf("Value after 2. test = %i \n\r", 0);
-    }
-    else{
-        printf("Value after 2. test  = %i \n\r", 1);
-    }
-}
-
-//test read status
-
-void test_read_status(){
-    uint8_t status = CAN_controller_read_status();
-    uint8_t befor = (( status & (1 << 2 )));
-
-    CAN_controller_request_to_send(MCP_RTS_TX0);
-
-    uint8_t staus2 = CAN_controller_read_status();
-    uint8_t after = (( status & (1 << 2 )));
-
-    printf("Value befor test: %i, value after test %i \r\n",befor,after);
-
-
-}
-void test_can_controller_reset(){
-
-    CAN_controller_change_mode(MODE_LOOPBACK);
-     uint8_t state = CAN_controller_read(MCP_CANSTAT);
-
-   if ((state  & MODE_MASK) != MODE_LOOPBACK){
-       printf("An error occured when setting the mode \n\r");
-   }
-   else
-   {
-     printf("Mode Success \n\r");
-    }
-    
-
-    CAN_controller_reset();
-    uint8_t state2 = CAN_controller_read(MCP_CANSTAT);
-    if ((state2  & MODE_MASK) != MODE_CONFIG){
-    printf("An error occured during init \n\r");
-  }
-   else
-   {
-      printf("Success init \n\r");
-    }
-}
 
 void test_CAN_transmitt_and_recieve()
 {
@@ -319,20 +224,35 @@ void test_CAN_transmitt_and_recieve()
 
     while(1){
 
+
     CAN_transmit( &message_1_send);
     _delay_ms(100);
     CAN_recieve(&message_1_recieve);
 
-    if (message_1_recieve.ID == message_1_send.ID){
-        printf("correct transmission ID");
+
+
+    uint8_t ID = (message_1_recieve.ID == message_1_send.ID);
+    uint8_t length = (message_1_recieve.length == message_1_send.length);
+    uint8_t data = 1;
+
+    for (int i = 0; i  < message_1_recieve.length; i++)
+    {
+        if (message_1_recieve.data[i] != message_1_send.data[i])
+        {
+            data = 0;
+        }
+    }
+    if ( ID && length && data){
+        printf("Correct transmission for all parameters \n\r");
 
     }
-    else{
-        printf("The sendt ID was %i, the recieved ID was %i", message_1_send.ID, message_1_recieve.ID);
-
+    else
+    {
+        printf("Incorrect transmisson \n\r");
     }
 
-    _delay_ms(10000);  
+
+    _delay_ms(4000);  
     }
 }
 
@@ -341,6 +261,13 @@ void test_CAN_transmitt_and_recieve_2()
     CAN_MESSAGE_FRAME message_1;
     CAN_MESSAGE_FRAME message_2;
     CAN_MESSAGE_FRAME message_3;
+    
+    CAN_MESSAGE_FRAME message_1_res;
+    CAN_MESSAGE_FRAME message_2_res;
+    CAN_MESSAGE_FRAME message_3_res;
+
+
+
 
 
     message_1.length = 8;
@@ -367,13 +294,63 @@ void test_CAN_transmitt_and_recieve_2()
 
     while(1){
     
-    CAN_transmit(&message_1);
-    _delay_ms(10000); 
-    CAN_transmit(&message_2);
-    _delay_ms(10000); 
-    CAN_transmit(&message_3);
-    _delay_ms(10000); 
+    CAN_transmit( &message_1);
+    _delay_ms(100);
+    CAN_recieve(&message_1_res);
+    
+    CAN_transmit( &message_2);
+    _delay_ms(100);
+    CAN_recieve(&message_2_res);
 
+    CAN_transmit( &message_3);
+    _delay_ms(100);
+    CAN_recieve(&message_3_res);
+
+
+    uint8_t ID_1 = (message_1.ID == message_1_res.ID);
+    uint8_t length_1 = (message_1.length == message_1_res.length);
+    uint8_t data_1 = 1;
+
+    uint8_t ID_2 = (message_2.ID == message_2_res.ID);
+    uint8_t length_2 = (message_2.length == message_2_res.length);
+    uint8_t data_2 = 1;
+
+    uint8_t ID_3 = (message_3.ID == message_3_res.ID);
+    uint8_t length_3 = (message_3.length == message_3_res.length);
+    uint8_t data_3 = 1;
+
+
+    for (int i = 0; i  < message_1.length; i++)
+    {
+        if (message_1.data[i] != message_1_res.data[i])
+        {
+            data_1 = 0;
+        }
+        if (message_2.data[i] != message_2_res.data[i])
+        {
+            data_2 = 0;
+        }
+        if (message_3.data[i] != message_3.data[i])
+        {
+            data_3 = 0;
+        }
+    }
+
+    uint8_t first_correct = (ID_1 && length_1 && data_1);
+    uint8_t second_correct = (ID_2 && length_2 && data_2);
+    uint8_t third_correct = (ID_3 && length_3 && data_3);
+
+
+    if ( first_correct && second_correct && third_correct){
+        printf("Correct transmission for all parameters on all objects \n\r");
+
+    }
+    else
+    {
+        printf("Incorrect transmisson");
+    }
+
+    _delay_ms(4000);  
     }
 
 

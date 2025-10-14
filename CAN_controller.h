@@ -194,14 +194,10 @@ void CAN_controller_request_to_send(uint8_t address);
 void CAN_controller_bit_modify(uint8_t address, uint8_t data, uint8_t mask);
 void CAN_controller_reset();
 uint8_t CAN_controller_read_status();
-
-//test functions
 void CAN_controller_change_mode(uint8_t mode);
-void test_base_commands();
-void test_RTS();
-void test_bit_modify();
-void test_read_status();
-void test_can_controller_reset();
+//test functions
+
+
 
 void slave_select_test_CAN_2();
 
