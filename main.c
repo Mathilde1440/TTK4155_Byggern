@@ -1,10 +1,11 @@
 
-
+#include <stdio.h>
 #include <avr/io.h>
-#include <util/delay.h>
+
+
+
 #include "node1/uart.h"
 #include "node1/sram.h"
-#include <stdio.h>
 #include "node1/labdag1.h"
 #include "node1/labdag2.h"
 #include "node1/labdag3.h"
@@ -14,6 +15,8 @@
 #include "node1/oled.h"
 #include "node1/menu_interface.h"
 #include "node1/CAN_controller.h"
+
+#include <util/delay.h>
 
 
 
@@ -36,7 +39,7 @@ int main(void) {
 
     CAN_init(MODE_LOOPBACK);
     //test_CAN_transmitt_and_recieve();
-    //test_CAN_transmitt_and_recieve_2();
+    test_CAN_transmitt_and_recieve_2();
     //CAN_controller_reset();
     //_delay_ms(10);
     //slave_select_test_CAN_2();
@@ -46,6 +49,7 @@ int main(void) {
     //test_can_controller_reset();
     //test_RTS();
     //test_bit_modify();
+
 
 
 
