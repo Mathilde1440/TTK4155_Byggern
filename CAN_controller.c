@@ -32,7 +32,7 @@ void CAN_transmit(CAN_MESSAGE_FRAME* message){
     //From data sheet: At a minimum, the TXBnSIDH, TXBnSIDL and TXBnDLC registers must be loaded.If data bytes are present in the message, the TXBnDm registers must also be loaded
 
     CAN_controller_write(MCP_TXB0SIDH, ((message->ID) >> 3) & 0xFF ); // TXBnSIDH 8 MSB of ID (Shifts 3 to the right)
-    CAN_controller_write(MCP_TXB0SIDL, ((message->ID & 0x07) >> 5 ));     //TXBnSIDL 3 LSB of ID
+    CAN_controller_write(MCP_TXB0SIDL, ((message->ID & 0x07) << 5 ));     //TXBnSIDL 3 LSB of ID
     CAN_controller_write(MCP_TXB0DLC, message->length);     //TXBnDLC, length?
     
 
@@ -54,8 +54,7 @@ uint8_t CAN_recieve(CAN_MESSAGE_FRAME* message){
     uint8_t is_ready_1IF = CAN_controller_read(MCP_CANINTF) & MCP_RX1IF;
 
     if (is_ready_0IF){
-        message->ID |= (CAN_controller_read(MCP_RXB0SIDH) << 5); // 8 MSB of ID
-        message->ID |= (CAN_controller_read(MCP_RXB0SIDL) << 3); // 3 LSB of ID
+        message->ID = ((CAN_controller_read(MCP_RXB0SIDH) >> 5) | (CAN_controller_read(MCP_RXB0SIDL) << 3)); // 8 MSB of ID
         message->length = CAN_controller_read(MCP_RXB0DLC);
 
 
@@ -73,8 +72,7 @@ uint8_t CAN_recieve(CAN_MESSAGE_FRAME* message){
     }
     else if (is_ready_1IF){
 
-        message->ID |= (CAN_controller_read(MCP_RXB1SIDH) << 5); // 8 MSB of ID
-        message->ID |= (CAN_controller_read(MCP_RXB1SIDL) << 3); // 3 LSB of ID
+        message->ID = ((CAN_controller_read(MCP_RXB0SIDH) >> 5) | (CAN_controller_read(MCP_RXB0SIDL) << 3)); // 8 MSB of ID
         message->length = CAN_controller_read(MCP_RXB1DLC);
 
 
