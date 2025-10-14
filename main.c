@@ -35,8 +35,8 @@ int main(void) {
     oled_reset();
 
     CAN_init(MODE_LOOPBACK);
-    test_CAN_transmitt_and_recieve();
-    //test_CAN_transmitt_and_recieve_2();
+    //test_CAN_transmitt_and_recieve();
+    test_CAN_transmitt_and_recieve_2();
     //CAN_controller_reset();
     //_delay_ms(10);
     //slave_select_test_CAN_2();

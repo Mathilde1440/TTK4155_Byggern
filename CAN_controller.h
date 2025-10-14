@@ -195,6 +195,7 @@ void CAN_controller_bit_modify(uint8_t address, uint8_t data, uint8_t mask);
 void CAN_controller_reset();
 uint8_t CAN_controller_read_status();
 void CAN_controller_change_mode(uint8_t mode);
+void print_message_object(CAN_MESSAGE_FRAME* message_1, CAN_MESSAGE_FRAME* message_2);
 //test functions
 
 

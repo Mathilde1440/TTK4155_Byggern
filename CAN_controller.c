@@ -21,7 +21,7 @@ void CAN_init(uint8_t mode){
 
     //Filtes and masks
 
-    CAN_controller_write(MCP_RXB0CTRL,0b01100000); // recieve all messaages
+    //CAN_controller_write(MCP_RXB0CTRL,0b01100000); // recieve all messaages
 
 
     CAN_controller_change_mode(mode);
@@ -42,6 +42,20 @@ void CAN_transmit(CAN_MESSAGE_FRAME* message){
     }
 
     CAN_controller_request_to_send(MCP_RTS_TX0); //sets TXREQ
+
+
+    uint8_t reg = CAN_controller_read(MCP_TXB0CTRL);
+
+    if (reg & (1  << 3)){
+        if ( reg & (1 << 4 )){
+            printf("CAN error: msg tected \n\r");
+        }
+        else if (reg & (1  << 5))
+        {
+            printf("CAN error: msg lost \n\r");
+        }
+
+    }
 }
 
 
@@ -50,12 +64,24 @@ uint8_t CAN_recieve(CAN_MESSAGE_FRAME* message){
     //CANINTF.RX0IF, MCP_RX0IF	
     //CANINTF.RX1IF, MCP_MERRF
     //MCP_CANINTF,
+
+    //reset values 
+    message->ID = 0;
+    message->length = 0;
+
+    for (int8_t i = 0; i < 8; i++){
+        message->data[i] = 0;
+    }
+
     uint8_t is_ready_0IF = CAN_controller_read(MCP_CANINTF) & MCP_RX0IF;
     uint8_t is_ready_1IF = CAN_controller_read(MCP_CANINTF) & MCP_RX1IF;
 
     if (is_ready_0IF){
-        message->ID = ((CAN_controller_read(MCP_RXB0SIDH) <<3 ) | (CAN_controller_read(MCP_RXB0SIDL) >> 5)); // 8 MSB of ID
-        message->length = CAN_controller_read(MCP_RXB0DLC);
+        uint8_t SIDH = CAN_controller_read(MCP_RXB0SIDH);
+        uint8_t SIDL = CAN_controller_read(MCP_RXB0SIDL);
+        message->ID = (SIDH << 3) | (SIDL >> 5);
+
+        message->length = CAN_controller_read(MCP_RXB0DLC) & 0x0F;
 
 
         for (int adress_offset = 0; adress_offset < message->length; adress_offset++)
@@ -65,14 +91,18 @@ uint8_t CAN_recieve(CAN_MESSAGE_FRAME* message){
 
 
         }
-        CAN_controller_bit_modify(MCP_CANINTF,MCP_RX0IF,0); //Resets RX0IF to prevent message from beeing read twice
+        CAN_controller_bit_modify(MCP_CANINTF,0,3); //Resets RX0IF to prevent message from beeing read twice
         
         return 1;
 
     }
     else if (is_ready_1IF){
+        
+        uint8_t SIDH = CAN_controller_read(MCP_RXB0SIDH);
+        uint8_t SIDL = CAN_controller_read(MCP_RXB0SIDL);
+        message->ID = (SIDH << 3) | (SIDL >> 5);
 
-        message->ID = ((CAN_controller_read(MCP_RXB1SIDH) <<3 ) | (CAN_controller_read(MCP_RXB1SIDL) >> 5)); // 8 MSB of ID
+  
         message->length = CAN_controller_read(MCP_RXB1DLC);
 
 
@@ -83,7 +113,7 @@ uint8_t CAN_recieve(CAN_MESSAGE_FRAME* message){
 
         }
 
-        CAN_controller_bit_modify(MCP_CANINTF,MCP_RX1IF,0); //Resets RX0IF to prevent message from beeing read twice
+        CAN_controller_bit_modify(MCP_CANINTF,0,3); //Resets RX0IF to prevent message from beeing read twice
         return 1;
     }
     return 0;
@@ -242,14 +272,7 @@ void test_CAN_transmitt_and_recieve()
             data = 0;
         }
     }
-    if ( ID && length && data){
-        printf("Correct transmission for all parameters \n\r");
-
-    }
-    else
-    {
-        printf("Incorrect transmisson \n\r");
-    }
+    print_message_object(&message_1_send, &message_1_recieve);
 
 
     _delay_ms(4000);  
@@ -265,10 +288,6 @@ void test_CAN_transmitt_and_recieve_2()
     CAN_MESSAGE_FRAME message_1_res;
     CAN_MESSAGE_FRAME message_2_res;
     CAN_MESSAGE_FRAME message_3_res;
-
-
-
-
 
     message_1.length = 8;
     message_2.length = 8;
@@ -297,14 +316,31 @@ void test_CAN_transmitt_and_recieve_2()
     CAN_transmit( &message_1);
     _delay_ms(100);
     CAN_recieve(&message_1_res);
-    
+    uint8_t var = CAN_controller_read(MCP_TXB0CTRL) & (1 << 3);
+
+    while (CAN_controller_read(MCP_TXB0CTRL) & (1 << 3)){
+        printf("TEXREQ not clear");
+    };
+
+    _delay_ms(100);
+    print_message_object(&message_1, &message_1_res);
+
+
     CAN_transmit( &message_2);
     _delay_ms(100);
     CAN_recieve(&message_2_res);
 
+    _delay_ms(100);
+
+    print_message_object(&message_2,&message_2_res);
+
     CAN_transmit( &message_3);
     _delay_ms(100);
     CAN_recieve(&message_3_res);
+
+    _delay_ms(100);
+
+    print_message_object(&message_3, &message_3_res);
 
 
     uint8_t ID_1 = (message_1.ID == message_1_res.ID);
@@ -330,7 +366,7 @@ void test_CAN_transmitt_and_recieve_2()
         {
             data_2 = 0;
         }
-        if (message_3.data[i] != message_3.data[i])
+        if (message_3.data[i] != message_3_res.data[i])
         {
             data_3 = 0;
         }
@@ -341,14 +377,14 @@ void test_CAN_transmitt_and_recieve_2()
     uint8_t third_correct = (ID_3 && length_3 && data_3);
 
 
-    if ( first_correct && second_correct && third_correct){
-        printf("Correct transmission for all parameters on all objects \n\r");
 
-    }
-    else
-    {
-        printf("Incorrect transmisson");
-    }
+
+
+
+
+
+
+
 
     _delay_ms(4000);  
     }
@@ -357,6 +393,16 @@ void test_CAN_transmitt_and_recieve_2()
 
 }
 
+void print_message_object(CAN_MESSAGE_FRAME* message_1, CAN_MESSAGE_FRAME* message_2)
+{
+    printf("ID: sendt: %i, recieved: %i \n\r", message_1->ID, message_2->ID);
+    printf("Length: sendt %i, recieved: %i \n\r", message_1->length, message_2->length);
+    for (int i = 0; i < message_1->length; i++){
+            printf("Data element %i: sendt: %i, recieved: %i \n\r", i, message_1->data[i], message_2->data[i]);
+
+    }
+
+}
 
 
 
