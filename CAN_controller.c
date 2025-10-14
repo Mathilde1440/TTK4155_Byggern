@@ -15,13 +15,13 @@ void CAN_init(uint8_t mode){
 
     //Bit timing
 
-    CAN_controller_write(MCP_CNF1, 00000000); //SJW length is 1 TQ
-    CAN_controller_write(MCP_CNF2, 10010001); //PROSEG = 2TQ, SP1 = 3TQ, Blt mode = 1
-    CAN_controller_write(MCP_CNF3, 00000001); //SP2 = 2TQ
+    CAN_controller_write(MCP_CNF1, 0b00000000); //SJW length is 1 TQ
+    CAN_controller_write(MCP_CNF2, 0b10010001); //PROSEG = 2TQ, SP1 = 3TQ, Blt mode = 1
+    CAN_controller_write(MCP_CNF3, 0b00000001); //SP2 = 2TQ
 
     //Filtes and masks
 
-    CAN_controller_write(MCP_RXB0CTRL, ); // recieve all messaages
+    CAN_controller_write(MCP_RXB0CTRL,0b01100000); // recieve all messaages
 
 
     CAN_controller_change_mode(mode);
@@ -59,35 +59,33 @@ void CAN_recieve(CAN_MESSAGE_FRAME* message){
         message->length = CAN_controller_read(MCP_RXB0DLC);
 
 
-        for (int adress_offset = 0; adress_offset < message->length; adress_offset++){
+        for (int adress_offset = 0; adress_offset < message->length; adress_offset++)
+        {
 
-            CAN_controller_read(MCP_RXB0D0 + adress_offset, message->data[adress_offset]);  
+           message->data[adress_offset] =  CAN_controller_read(MCP_RXB0D0 + adress_offset);  
 
 
-
-        CAN_controller_bit_modify(MCP_CANINTF,MCP_RX0IF,0) //Resets RX0IF to prevent message from beeing read twice
+        }
+        CAN_controller_bit_modify(MCP_CANINTF,MCP_RX0IF,0); //Resets RX0IF to prevent message from beeing read twice
         
-    }
+ 
 
     }
     else if (is_ready_1IF){
 
-        message->ID = (CAN_controller_read(MCP_RXB0SIDH) << 5); // 8 MSB of ID
-        message->ID = (CAN_controller_read(MCP_RXB0SIDL) << 3); // 3 LSB of ID
-        message->length = CAN_controller_read(MCP_RXB0DLC);
+        message->ID = (CAN_controller_read(MCP_RXB1SIDH) << 5); // 8 MSB of ID
+        message->ID = (CAN_controller_read(MCP_RXB1SIDL) << 3); // 3 LSB of ID
+        message->length = CAN_controller_read(MCP_RXB1DLC);
 
 
-        for (int adress_offset = 0; adress_offset < message->length; adress_offset++){
+        for (int adress_offset = 0; adress_offset < message->length; adress_offset++)
+        {
+            
+           message->data[adress_offset] =  CAN_controller_read(MCP_RXB1D0 + adress_offset);  
 
-            CAN_controller_read(MCP_RXB0D0 + adress_offset, message->data[adress_offset]);  
+        }
 
-
-
-        CAN_controller_bit_modify(MCP_CANINTF,MCP_RX1IF,0) //Resets RX0IF to prevent message from beeing read twice
-        
-
-        
-
+        CAN_controller_bit_modify(MCP_CANINTF,MCP_RX1IF,0); //Resets RX0IF to prevent message from beeing read twice
     }
 }
 uint8_t CAN_controller_read(uint8_t address)
@@ -270,7 +268,7 @@ void test_read_status(){
     uint8_t status = CAN_controller_read_status();
     uint8_t befor = (( status & (1 << 2 )));
 
-    CAN_controller_request_to_send();
+    CAN_controller_request_to_send(MCP_RTS_TX0);
 
     uint8_t staus2 = CAN_controller_read_status();
     uint8_t after = (( status & (1 << 2 )));
@@ -303,6 +301,69 @@ void test_can_controller_reset(){
       printf("Success init \n\r");
     }
 }
+
+void test_CAN_transmitt_and_recieve()
+{
+    CAN_MESSAGE_FRAME message_1;
+    
+    message_1.length = 8;
+    message_1.ID = 0x100;
+    for (int i = 0; i < message_1.length; i++){
+        message_1.data[i] = i;
+
+    }
+
+    while(1){
+
+    CAN_transmit(&message_1);
+    _delay_ms(10000);  
+    }
+}
+
+void test_CAN_transmitt_and_recieve_2()
+{
+    CAN_MESSAGE_FRAME message_1;
+    CAN_MESSAGE_FRAME message_2;
+    CAN_MESSAGE_FRAME message_3;
+
+
+    message_1.length = 8;
+    message_2.length = 8;
+    message_3.length = 8;
+
+    message_1.ID = 0x100;
+    message_2.ID = 0x200;
+    message_3.ID = 0x300;
+
+
+    for (int i = 0; i < message_1.length; i++){
+        message_1.data[i] = i;
+
+    }
+    for (int i = 0; i < message_1.length; i++){
+        message_2.data[i] = i+1;
+        
+    }
+    for (int i = 0; i < message_1.length; i++){
+        message_3.data[i] = i+2;
+        
+    }
+
+    while(1){
+    
+    CAN_transmit(&message_1);
+    _delay_ms(10000); 
+    CAN_transmit(&message_2);
+    _delay_ms(10000); 
+    CAN_transmit(&message_3);
+    _delay_ms(10000); 
+
+    }
+
+
+
+}
+
 
 
 

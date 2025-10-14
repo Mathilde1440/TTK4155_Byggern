@@ -77,6 +77,11 @@ Copyright 2003 Kimberly Otten Software Consulting
 #define MCP_RXB0DLC    0x65
 #define MCP_RXB0D0     0x66
 
+#define MCP_RXB1SIDL	0x72
+#define MCP_RXB1DLC    0x75
+#define MCP_RXB1D0     0x76
+
+
 
 #define MCP_TX_INT		0x1C		// Enable all transmit interrupts
 #define MCP_TX01_INT	0x0C		// Enable TXB0 and TXB1 interrupts
@@ -171,7 +176,7 @@ Copyright 2003 Kimberly Otten Software Consulting
 
 typedef struct {
 
-    uint8_t ID;
+    unsigned int ID;
     uint8_t length;
     uint8_t data[8];
 
@@ -199,6 +204,14 @@ void test_read_status();
 void test_can_controller_reset();
 
 void slave_select_test_CAN_2();
+
+
+//CAN_test_functions
+
+
+void test_CAN_transmitt_and_recieve();
+
+void test_CAN_transmitt_and_recieve_2();
 
 
 
