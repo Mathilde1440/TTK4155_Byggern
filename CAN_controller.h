@@ -67,6 +67,16 @@ Copyright 2003 Kimberly Otten Software Consulting
 #define MCP_RXB1CTRL	0x70
 #define MCP_RXB1SIDH	0x71
 
+//defined by us, semmd to be missing?
+#define MCP_TXB0SIDH   0x31
+#define MCP_TXB0SIDL   0x32
+#define MCP_TXB0DLC    0x35
+#define MCP_TXB0D0     0x36
+
+#define MCP_RXB0SIDL	0x62
+#define MCP_RXB0DLC    0x65
+#define MCP_RXB0D0     0x66
+
 
 #define MCP_TX_INT		0x1C		// Enable all transmit interrupts
 #define MCP_TX01_INT	0x0C		// Enable TXB0 and TXB1 interrupts
@@ -156,13 +166,26 @@ Copyright 2003 Kimberly Otten Software Consulting
 #define MCP_WAKIF		0x40
 #define MCP_MERRF		0x80
 
+//meassage struct
 
 
+typedef struct {
 
-void CAN_controller_init();
+    uint8_t ID;
+    uint8_t length;
+    uint8_t data[8];
+
+} CAN_MESSAGE_FRAME;
+
+//CAN functions
+void CAN_init(uint8_t mode);
+void CAN_transmit(CAN_MESSAGE_FRAME* message);
+void CAN_recieve(CAN_MESSAGE_FRAME* message);
+
+//MCP controller functions
 uint8_t CAN_controller_read(uint8_t address);
 void CAN_controller_write(uint8_t address,uint8_t data);
-void CAN_controller_request_to_send();
+void CAN_controller_request_to_send(uint8_t address);
 void CAN_controller_bit_modify(uint8_t address, uint8_t data, uint8_t mask);
 void CAN_controller_reset();
 uint8_t CAN_controller_read_status();

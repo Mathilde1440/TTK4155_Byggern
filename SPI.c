@@ -106,7 +106,7 @@ void SPI_write(uint8_t data){
 
 }
 uint8_t SPI_read(){
-    SPDR = 0x00; //kicks" the SPI data registerr and starts transmission
+    SPDR = 0x00; //kicks" the SPI data registerr and starts transmission, dummy bit
     while (! ( SPSR & (1 << SPIF))){}; // waits for transmission to finish
     (void)SPSR;
     return SPDR;

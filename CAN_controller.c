@@ -6,8 +6,90 @@
 
 //#define F_CPU 16000000UL //Clock frequency at 16 MHz
 
+void CAN_init(uint8_t mode){
+
+    SPI_init();
+    CAN_controller_reset();
+
+    CAN_controller_change_mode(MODE_CONFIG);
+
+    //Bit timing
+
+    CAN_controller_write(MCP_CNF1, 00000000); //SJW length is 1 TQ
+    CAN_controller_write(MCP_CNF2, 10010001); //PROSEG = 2TQ, SP1 = 3TQ, Blt mode = 1
+    CAN_controller_write(MCP_CNF3, 00000001); //SP2 = 2TQ
+
+    //Filtes and masks
+
+    CAN_controller_write(MCP_RXB0CTRL, ); // recieve all messaages
 
 
+    CAN_controller_change_mode(mode);
+}
+
+void CAN_transmit(CAN_MESSAGE_FRAME* message){
+
+    //From data sheet: At a minimum, the TXBnSIDH, TXBnSIDL and TXBnDLC registers must be loaded.If data bytes are present in the message, the TXBnDm registers must also be loaded
+
+    CAN_controller_write(MCP_TXB0SIDH, (message->ID) / 8 ); // TXBnSIDH 8 MSB of ID (Shifts 3 to the right)
+    CAN_controller_write(MCP_TXB0SIDL, (message->ID) % 8  );     //TXBnSIDL 3 LSB of ID
+    CAN_controller_write(MCP_TXB0DLC, message->length);     //TXBnDLC, length?
+    
+
+    for (int adress_offset = 0; adress_offset < message->length; adress_offset++){
+
+        CAN_controller_write(MCP_TXB0D0 + adress_offset, message->data[adress_offset]);  
+    }
+
+    CAN_controller_request_to_send(MCP_RTS_TX0); //sets TXREQ
+}
+
+
+void CAN_recieve(CAN_MESSAGE_FRAME* message){
+
+    //CANINTF.RX0IF, MCP_RX0IF	
+    //CANINTF.RX1IF, MCP_MERRF
+    //MCP_CANINTF,
+    uint8_t is_ready_0IF = CAN_controller_read(MCP_CANINTF) & MCP_RX0IF;
+    uint8_t is_ready_1IF = CAN_controller_read(MCP_CANINTF) & MCP_RX1IF;
+
+    if (is_ready_0IF){
+        message->ID = (CAN_controller_read(MCP_RXB0SIDH) << 5); // 8 MSB of ID
+        message->ID = (CAN_controller_read(MCP_RXB0SIDL) << 3); // 3 LSB of ID
+        message->length = CAN_controller_read(MCP_RXB0DLC);
+
+
+        for (int adress_offset = 0; adress_offset < message->length; adress_offset++){
+
+            CAN_controller_read(MCP_RXB0D0 + adress_offset, message->data[adress_offset]);  
+
+
+
+        CAN_controller_bit_modify(MCP_CANINTF,MCP_RX0IF,0) //Resets RX0IF to prevent message from beeing read twice
+        
+    }
+
+    }
+    else if (is_ready_1IF){
+
+        message->ID = (CAN_controller_read(MCP_RXB0SIDH) << 5); // 8 MSB of ID
+        message->ID = (CAN_controller_read(MCP_RXB0SIDL) << 3); // 3 LSB of ID
+        message->length = CAN_controller_read(MCP_RXB0DLC);
+
+
+        for (int adress_offset = 0; adress_offset < message->length; adress_offset++){
+
+            CAN_controller_read(MCP_RXB0D0 + adress_offset, message->data[adress_offset]);  
+
+
+
+        CAN_controller_bit_modify(MCP_CANINTF,MCP_RX1IF,0) //Resets RX0IF to prevent message from beeing read twice
+        
+
+        
+
+    }
+}
 uint8_t CAN_controller_read(uint8_t address)
 {
     Slave_select(MCP2515_SS);
@@ -32,11 +114,11 @@ void CAN_controller_write(uint8_t address,uint8_t data)
     Reset_slave_select(MCP2515_SS);
 }
 
-void CAN_controller_request_to_send()
+void CAN_controller_request_to_send(uint8_t address)
 {
     Slave_select(MCP2515_SS);
 
-    SPI_write(MCP_RTS_TX0);
+    SPI_write(address);
 
     Reset_slave_select(MCP2515_SS);
 } 
