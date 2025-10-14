@@ -72,7 +72,7 @@ uint8_t CAN_recieve(CAN_MESSAGE_FRAME* message){
     }
     else if (is_ready_1IF){
 
-        message->ID = ((CAN_controller_read(MCP_RXB0SIDH) >> 5) | (CAN_controller_read(MCP_RXB0SIDL) << 3)); // 8 MSB of ID
+        message->ID = ((CAN_controller_read(MCP_RXB1SIDH) <<3 ) | (CAN_controller_read(MCP_RXB1SIDL) >> 5)); // 8 MSB of ID
         message->length = CAN_controller_read(MCP_RXB1DLC);
 
 

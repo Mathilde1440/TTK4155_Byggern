@@ -34,7 +34,7 @@ int main(void) {
     oled_init_2();
     oled_reset();
 
-    CAN_init(MODE_LOOPBACK);
+    //CAN_init(MODE_LOOPBACK);
     //test_CAN_transmitt_and_recieve();
     //CAN_controller_reset();
     //_delay_ms(10);
