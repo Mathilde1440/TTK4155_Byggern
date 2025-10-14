@@ -54,7 +54,7 @@ uint8_t CAN_recieve(CAN_MESSAGE_FRAME* message){
     uint8_t is_ready_1IF = CAN_controller_read(MCP_CANINTF) & MCP_RX1IF;
 
     if (is_ready_0IF){
-        message->ID = ((CAN_controller_read(MCP_RXB0SIDH) >> 5) | (CAN_controller_read(MCP_RXB0SIDL) << 3)); // 8 MSB of ID
+        message->ID = ((CAN_controller_read(MCP_RXB0SIDH) <<3 ) | (CAN_controller_read(MCP_RXB0SIDL) >> 5)); // 8 MSB of ID
         message->length = CAN_controller_read(MCP_RXB0DLC);
 
 
@@ -159,14 +159,17 @@ void CAN_controller_change_mode(uint8_t mode)
 {
     CAN_controller_write(MCP_CANCTRL,mode);
     uint8_t state = CAN_controller_read(MCP_CANSTAT);
-    
-//    if ((state  & mode) != mode ){
-//       printf("An error occured when setting the mode \n\r");
-//   }
-//    else
-//    {
-//       printf("Mode Success \n\r");
-//    }
+
+
+    if ((state  & mode) != mode )
+    {
+    printf("An error occured when setting the mode %i \n\r",mode);
+    }
+    else
+    {
+    printf("Mode  %i Success \n\r",mode);
+    }
+
 
 }
 
@@ -304,18 +307,31 @@ void test_can_controller_reset(){
 
 void test_CAN_transmitt_and_recieve()
 {
-    CAN_MESSAGE_FRAME message_1;
+    CAN_MESSAGE_FRAME message_1_send;
+    CAN_MESSAGE_FRAME message_1_recieve;
     
-    message_1.length = 8;
-    message_1.ID = 0x100;
-    for (int i = 0; i < message_1.length; i++){
-        message_1.data[i] = i;
+    message_1_send.length = 8;
+    message_1_send.ID = 0x100;
+    for (int i = 0; i < message_1_send.length; i++){
+        message_1_send.data[i] = i;
 
     }
 
     while(1){
 
-    CAN_transmit(&message_1);
+    CAN_transmit( &message_1_send);
+    _delay_ms(100);
+    CAN_recieve(&message_1_recieve);
+
+    if (message_1_recieve.ID == message_1_send.ID){
+        printf("correct transmission ID");
+
+    }
+    else{
+        printf("The sendt ID was %i, the recieved ID was %i", message_1_send.ID, message_1_recieve.ID);
+
+    }
+
     _delay_ms(10000);  
     }
 }
