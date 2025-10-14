@@ -23,6 +23,8 @@ int main()
     //uart_init(/*cpufreq*/, /*baud*/);
     //printf("Hello World\n\r");
 
+    
+
     while (1)
     {
         /* code */
