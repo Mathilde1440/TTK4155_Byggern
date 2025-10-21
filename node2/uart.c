@@ -2,7 +2,11 @@
 #include <stdio.h>
 
 #define F_CPU 84000000
-#define BAUD 9600UL
+#define BAUD 9600
+#define BAUD_PREC ((F_CPU / (16UL * BAUD))) //ikke sikkert -1 skal være der, jeg fjernet den
+
+
+
 
 typedef struct RingBuf RingBuf;
 struct RingBuf {

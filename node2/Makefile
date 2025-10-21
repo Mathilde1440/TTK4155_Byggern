@@ -9,7 +9,10 @@ SOURCE_FILES = \
 	$(BOOTUP) \
 	main.c \
 	uart.c \
-#	../node1/uart.c \
+	can_controller.c \
+	time.c \
+	test_functions_can.c \
+#	../path_to/uart.c \
 #   filename1.c \
 #   filename2.c \
 #	filenameN.c

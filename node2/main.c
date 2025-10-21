@@ -1,6 +1,15 @@
 #include <stdio.h>
 #include <stdarg.h>
 #include "sam.h"
+#include "uart.h"
+#include "can_controller.h"
+#include "test_functions_can.h"
+
+
+
+
+#include "sam3xa.h"
+
 
 /*
  * Remember to update the Makefile with the (relative) path to the uart.c file.
@@ -13,21 +22,22 @@
  */
 //#include "../path_to/uart.h"
 
+#define F_CPU 84000000
+#define BAUD 9600
+
+
 int main()
 {
     SystemInit();
 
     WDT->WDT_MR = WDT_MR_WDDIS; //Disable Watchdog Timer
 
-    //Uncomment after including uart above
-    //uart_init(/*cpufreq*/, /*baud*/);
-    //printf("Hello World\n\r");
 
-    
 
-    while (1)
-    {
-        /* code */
-    }
-    
+   
+    uart_init(F_CPU, BAUD);
+    can_init_def_tx_rx_mb(0x00053255); //BRP, SJW, PROPAG,PHASE1,PHASE2
+//0x000B2262
+    test_rec_node_1();
+
 }

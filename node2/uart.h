@@ -8,7 +8,7 @@
 // Internally, receiving is handled with interrupts and a ring buffer, so no characters
 // are lost, until the buffer is full. If necessary, you can change this buffer size in 
 // uart.c
-#include <stdint.h>
+
 
 // Initialize. Hooks stdio functions (like `printf`)
 void uart_init(uint32_t cpufreq, uint32_t baudrate);
