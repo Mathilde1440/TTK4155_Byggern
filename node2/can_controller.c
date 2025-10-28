@@ -25,6 +25,9 @@
  *
  * \retval Success(0) or failure(1)
  */
+
+
+
 uint8_t can_init_def_tx_rx_mb(uint32_t can_br)
 {
 	return can_init(can_br, 1, 2);
@@ -41,11 +44,9 @@ uint8_t can_init_def_tx_rx_mb(uint32_t can_br)
  *
  * \retval Success(0) or failure(1)
  */
-
-
 uint8_t can_init(uint32_t can_br, uint8_t num_tx_mb, uint8_t num_rx_mb)
 {
-	
+
 	//Make sure num_rx_mb and num_tx_mb is valid
 	if(num_rx_mb > 8 | num_tx_mb > 8 | num_rx_mb + num_tx_mb > 8)
 	{
@@ -53,14 +54,19 @@ uint8_t can_init(uint32_t can_br, uint8_t num_tx_mb, uint8_t num_rx_mb)
 	}
 
 
+	//Enable Clock for CAN0 in PMC  MOVED
+	PMC->PMC_PCR = PMC_PCR_EN | (0 << PMC_PCR_DIV_Pos) | PMC_PCR_CMD | (ID_CAN0 << PMC_PCR_PID_Pos); // DIV = 1(can clk = MCK/2), CMD = 1 (write), PID = 2B (CAN0)
+	PMC->PMC_PCER1 |= 1 << (ID_CAN0 - 32);
+
 	uint32_t ul_status; 
 	
+
 	//Disable can
 	CAN0->CAN_MR &= ~CAN_MR_CANEN; 
 	//Clear status register on read
 	ul_status = CAN0->CAN_SR; 
-	
-	
+
+
 	// Disable interrupts on CANH and CANL pins
 	PIOA->PIO_IDR = PIO_PA8A_URXD | PIO_PA9A_UTXD;
 	
@@ -73,15 +79,16 @@ uint8_t can_init(uint32_t can_br, uint8_t num_tx_mb, uint8_t num_rx_mb)
 	
 	// Enable pull up on CANH and CANL pin
 	PIOA->PIO_PUER = (PIO_PA1A_CANRX0 | PIO_PA0A_CANTX0);
+
 	
-	
-	//Enable Clock for CAN0 in PMC
-	PMC->PMC_PCR = PMC_PCR_EN | (0 << PMC_PCR_DIV_Pos) | PMC_PCR_CMD | (ID_CAN0 << PMC_PCR_PID_Pos); // DIV = 1(can clk = MCK/2), CMD = 1 (write), PID = 2B (CAN0)
-	PMC->PMC_PCER1 |= 1 << (ID_CAN0 - 32);
+	//Enable Clock for CAN0 in PMC original
+	//PMC->PMC_PCR = PMC_PCR_EN | (0 << PMC_PCR_DIV_Pos) | PMC_PCR_CMD | (ID_CAN0 << PMC_PCR_PID_Pos); // DIV = 1(can clk = MCK/2), CMD = 1 (write), PID = 2B (CAN0)
+	//PMC->PMC_PCER1 |= 1 << (ID_CAN0 - 32);
 	
 	//Set baudrate, Phase1, phase2 and propagation delay for can bus. Must match on all nodes!
+
 	CAN0->CAN_BR = can_br; 
-	
+
 
 	/****** Start of mailbox configuration ******/
 
@@ -97,6 +104,7 @@ uint8_t can_init(uint32_t can_br, uint8_t num_tx_mb, uint8_t num_rx_mb)
 
 		can_ier |= 1 << n; //Enable interrupt on rx mailbox
 	}
+
 	
 	/*Configure transmit mailboxes */
 	for (int n = 0; n < num_tx_mb; n++)
@@ -104,20 +112,25 @@ uint8_t can_init(uint32_t can_br, uint8_t num_tx_mb, uint8_t num_rx_mb)
 		CAN0->CAN_MB[n].CAN_MID = CAN_MID_MIDE;
 		CAN0->CAN_MB[n].CAN_MMR = (CAN_MMR_MOT_MB_TX);
 	}
-	
+
 	/****** End of mailbox configuraion ******/
 
 	//Enable interrupt on receive mailboxes
 	CAN0->CAN_IER = can_ier;
 
 	//Enable interrupt in NVIC 
-	NVIC_EnableIRQ(ID_CAN0);
+	//NVIC_EnableIRQ(ID_CAN0); //orginal
+	//NVIC_EnableIRQ(CAN0_IRQn);
+
 
 	//enable CAN
 	CAN0->CAN_MR |= CAN_MR_CANEN;
 
 	return 0;
 }
+
+
+
 
 /**
  * \brief Send can message from mailbox

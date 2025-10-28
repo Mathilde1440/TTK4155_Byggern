@@ -213,6 +213,8 @@ void test_CAN_transmitt_and_recieve_2();
 
 void test_CAN_transmitt_to_node_2();
 
+void test_CAN_transmitt_to_node_3();
+
 
 
 #endif

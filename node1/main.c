@@ -50,7 +50,18 @@ int main(void) {
     //test_RTS();
     //test_bit_modify();
 
-    test_CAN_transmitt_to_node_2();
+    //test_CAN_transmitt_to_node_2();
+    //test_CAN_transmitt_to_node_2();
+
+    while(1){
+
+        IO_BOARD obj = read_analog_values_dir_IO();
+        CAN_MESSAGE_FRAME msg;
+
+
+
+        test_JS_driver(&obj, &msg);
+    }
 
 
 

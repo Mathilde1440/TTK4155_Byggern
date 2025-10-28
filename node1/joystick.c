@@ -248,3 +248,23 @@ void joystic_test(){
     }
 
 }
+
+
+void encode_JS_direction(IO_BOARD* obj, CAN_MESSAGE_FRAME* msg)
+{
+
+    msg->ID = 0x100;
+    msg->length = 8;
+
+    msg->data[0] = obj->X_JS;
+    msg->data[1] = obj->Y_JS;
+
+}
+
+void test_JS_driver(IO_BOARD* obj, CAN_MESSAGE_FRAME* msg)
+{
+
+    encode_JS_direction(obj, msg);
+    CAN_transmit(msg); 
+
+}

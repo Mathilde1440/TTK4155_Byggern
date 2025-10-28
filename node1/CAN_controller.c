@@ -15,9 +15,16 @@ void CAN_init(uint8_t mode){
 
     //Bit timing
 
-    CAN_controller_write(MCP_CNF1, 0b11000000); //SJW length is 3 TQ, BRP = 0
-    CAN_controller_write(MCP_CNF2, 0b10101010); //PROSEG = 2, PRSEG1 = 5, Blt mode = 1
-    CAN_controller_write(MCP_CNF3, 0b00000101); //PRSEG2 = 5
+    CAN_controller_write(MCP_CNF1, 0b11000011); 
+    CAN_controller_write(MCP_CNF2, 0b10101010); 
+    CAN_controller_write(MCP_CNF3, 0b00000101); 
+
+    //CAN_controller_write(MCP_CNF1, 0b11000000); //SJW length is 3 TQ, BRP = 0
+    //CAN_controller_write(MCP_CNF2, 0b10101010); //PROSEG = 2, PRSEG1 = 5, Blt mode = 1
+    //CAN_controller_write(MCP_CNF3, 0b00000101); //PRSEG2 = 5
+
+
+
 
 
     //CAN_controller_write(MCP_CNF1, 0b00000000); //SJW length is 1 TQ, maybe this is BRP 1, check later
@@ -39,6 +46,7 @@ void CAN_transmit(CAN_MESSAGE_FRAME* message){
     CAN_controller_write(MCP_TXB0SIDH, ((message->ID) >> 3) & 0xFF ); // TXBnSIDH 8 MSB of ID (Shifts 3 to the right)
     CAN_controller_write(MCP_TXB0SIDL, ((message->ID & 0x07) << 5 ));     //TXBnSIDL 3 LSB of ID
     CAN_controller_write(MCP_TXB0DLC, message->length);     //TXBnDLC, length?
+    
     
 
     for (int adress_offset = 0; adress_offset < message->length; adress_offset++){
@@ -468,7 +476,59 @@ void test_CAN_transmitt_to_node_2(){
     CAN_transmit( &message_3);
     print_message_object_1( &message_3);
 
-    _delay_ms(4000);  
+    _delay_ms(4);  
+    }
+
+}
+
+void test_CAN_transmitt_to_node_3(){
+
+
+    CAN_MESSAGE_FRAME message_1;
+
+    
+    CAN_MESSAGE_FRAME message_1_res;
+
+
+
+    message_1.length = 8;
+
+
+    message_1.ID = 0x001;
+
+    int count = 0;
+
+    for (int i = 0; i < message_1.length; i++){
+
+        if (count == 0){
+
+            message_1.data[i] = 0;
+            count = 1;
+        }
+        else{
+            message_1.data[i] = 1;
+            count = 0;
+
+        }
+        
+
+    }
+
+
+    while(1){
+    
+    CAN_transmit( &message_1);
+    print_message_object_1( &message_1);
+    _delay_ms(100);
+
+
+    uint8_t var = CAN_controller_read(MCP_TXB0CTRL) & (1 << 3);
+
+    //while (CAN_controller_read(MCP_TXB0CTRL) & (1 << 3)){
+    //    printf("TEXREQ not clear");
+    //};
+
+    _delay_ms(100);  
     }
 
 }

@@ -4,6 +4,7 @@
 #include <avr/io.h>
 #include <util/delay.h>
 
+#include "CAN_controller.h"
 //#include "labdag3.h"
 
 
@@ -52,9 +53,12 @@ int JS_button_pressed();
 void test_function_JS(JOYSTICK_DIRECTION direction);
 void test_function_TP(JOYSTICK_DIRECTION direction);
 
+void encode_JS_direction(IO_BOARD* obj, CAN_MESSAGE_FRAME* msg);
+
 
 void joystic_test();
 
 //uint8_t* ADC_read_testing();
 #endif
 
+void test_JS_driver(IO_BOARD* obj, CAN_MESSAGE_FRAME* msg);

@@ -7,8 +7,11 @@
 #include <stdarg.h>
 #include "can_controller.h"
 
+
 void print_message_object_node_2(CAN_MESSAGE* message);
 void test_rec_node_1();
+void test_JS_driver();
+
 
 
 

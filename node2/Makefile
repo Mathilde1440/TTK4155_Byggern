@@ -12,6 +12,7 @@ SOURCE_FILES = \
 	can_controller.c \
 	time.c \
 	test_functions_can.c \
+	io_board_driver_node_2.c \
 #	../path_to/uart.c \
 #   filename1.c \
 #   filename2.c \
