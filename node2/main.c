@@ -5,6 +5,7 @@
 #include "can_controller.h"
 #include "test_functions_can.h"
 #include "io_board_driver_node_2.h"
+#include "pwm_driver.h"
 
 
 
@@ -40,6 +41,7 @@ int main()
     uart_init(F_CPU, BAUD);
 
     can_init_def_tx_rx_mb(0x00293255); //BRP, SJW, PROPAG,PHASE1,PHASE2
+    test_JS_driver();
 
     
 

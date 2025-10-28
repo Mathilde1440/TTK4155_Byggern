@@ -13,6 +13,8 @@ SOURCE_FILES = \
 	time.c \
 	test_functions_can.c \
 	io_board_driver_node_2.c \
+	can_interrupt.c \
+	pwm_driver.c \
 #	../path_to/uart.c \
 #   filename1.c \
 #   filename2.c \
