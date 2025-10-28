@@ -198,6 +198,7 @@ void CAN_controller_change_mode(uint8_t mode);
 void print_message_object(CAN_MESSAGE_FRAME* message_1, CAN_MESSAGE_FRAME* message_2);
 //test functions
 
+void print_message_object_1(CAN_MESSAGE_FRAME* message);
 
 
 void slave_select_test_CAN_2();
@@ -209,6 +210,8 @@ void slave_select_test_CAN_2();
 void test_CAN_transmitt_and_recieve();
 
 void test_CAN_transmitt_and_recieve_2();
+
+void test_CAN_transmitt_to_node_2();
 
 
 

@@ -15,13 +15,18 @@ void CAN_init(uint8_t mode){
 
     //Bit timing
 
-    CAN_controller_write(MCP_CNF1, 0b00000000); //SJW length is 1 TQ
-    CAN_controller_write(MCP_CNF2, 0b10010001); //PROSEG = 2TQ, SP1 = 3TQ, Blt mode = 1
-    CAN_controller_write(MCP_CNF3, 0b00000001); //SP2 = 2TQ
+    CAN_controller_write(MCP_CNF1, 0b11000000); //SJW length is 3 TQ, BRP = 0
+    CAN_controller_write(MCP_CNF2, 0b10101010); //PROSEG = 2, PRSEG1 = 5, Blt mode = 1
+    CAN_controller_write(MCP_CNF3, 0b00000101); //PRSEG2 = 5
+
+
+    //CAN_controller_write(MCP_CNF1, 0b00000000); //SJW length is 1 TQ, maybe this is BRP 1, check later
+    //CAN_controller_write(MCP_CNF2, 0b10010001); //PROSEG = 2TQ, SP1 = 3TQ, Blt mode = 1
+    //CAN_controller_write(MCP_CNF3, 0b00000001); //SP2 = 2TQ
 
     //Filtes and masks
 
-    //CAN_controller_write(MCP_RXB0CTRL,0b01100000); // recieve all messaages
+    //CAN_controller_write(MCP_RXB0CTRL,0b01100000); // recieve all messaages?
 
 
     CAN_controller_change_mode(mode);
@@ -378,18 +383,8 @@ void test_CAN_transmitt_and_recieve_2()
 
 
 
-
-
-
-
-
-
-
-
     _delay_ms(4000);  
     }
-
-
 
 }
 
@@ -400,6 +395,80 @@ void print_message_object(CAN_MESSAGE_FRAME* message_1, CAN_MESSAGE_FRAME* messa
     for (int i = 0; i < message_1->length; i++){
             printf("Data element %i: sendt: %i, recieved: %i \n\r", i, message_1->data[i], message_2->data[i]);
 
+    }
+
+}
+
+void print_message_object_1(CAN_MESSAGE_FRAME* message)
+
+{
+    printf("ID:%i \n\r", message->ID);
+    printf("Length: %i\n\r", message->length);
+    for (int i = 0; i < message->length; i++){
+            printf("Data element %i: %i \n\r", i, message->data[i]);
+
+    }
+
+}
+
+
+
+void test_CAN_transmitt_to_node_2(){
+
+
+    CAN_MESSAGE_FRAME message_1;
+    CAN_MESSAGE_FRAME message_2;
+    CAN_MESSAGE_FRAME message_3;
+    
+    CAN_MESSAGE_FRAME message_1_res;
+    CAN_MESSAGE_FRAME message_2_res;
+    CAN_MESSAGE_FRAME message_3_res;
+
+    message_1.length = 8;
+    message_2.length = 8;
+    message_3.length = 8;
+
+    message_1.ID = 0x100;
+    message_2.ID = 0x200;
+    message_3.ID = 0x300;
+
+
+    for (int i = 0; i < message_1.length; i++){
+        message_1.data[i] = i;
+
+    }
+    for (int i = 0; i < message_1.length; i++){
+        message_2.data[i] = i+1;
+        
+    }
+    for (int i = 0; i < message_1.length; i++){
+        message_3.data[i] = i+2;
+        
+    }
+
+    while(1){
+    
+    CAN_transmit( &message_1);
+    print_message_object_1( &message_1);
+    _delay_ms(100);
+
+
+    uint8_t var = CAN_controller_read(MCP_TXB0CTRL) & (1 << 3);
+
+    //while (CAN_controller_read(MCP_TXB0CTRL) & (1 << 3)){
+    //    printf("TEXREQ not clear");
+    //};
+
+    CAN_transmit( &message_2);
+    print_message_object_1( &message_2);
+    _delay_ms(100);
+
+
+
+    CAN_transmit( &message_3);
+    print_message_object_1( &message_3);
+
+    _delay_ms(4000);  
     }
 
 }
