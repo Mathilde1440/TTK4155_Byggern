@@ -40,10 +40,11 @@ int main()
    
     uart_init(F_CPU, BAUD);
 
-    can_init_def_tx_rx_mb(0x00293255); //BRP, SJW, PROPAG,PHASE1,PHASE2
-    test_JS_driver();
-
+    can_init_def_tx_rx_mb(0x00293255); //BRP, SJW, PROPAG PHASE1,PHASE2
+    timer_counter_init();
+    test_servo_driver();
     
 
 
+    //test_JS_driver();
 }
