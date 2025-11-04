@@ -6,6 +6,8 @@
 #include "test_functions_can.h"
 #include "io_board_driver_node_2.h"
 #include "pwm_driver.h"
+#include "adc.h"
+#include "encoder.h"
 
 
 
@@ -39,12 +41,23 @@ int main()
 
    
     uart_init(F_CPU, BAUD);
-
     can_init_def_tx_rx_mb(0x00293255); //BRP, SJW, PROPAG PHASE1,PHASE2
     timer_counter_init();
-    test_servo_driver();
+    adc_init();
+    encoder_init();
+
+    //test_keep_score();
+    while(1) {
+    int32_t enc_pos = read_encoder_pos();
+    printf("Encoder pos: %i \n\r", enc_pos);
+    }
     
 
-
+    //test_servo_driver();
+    //calulate_and_set_DC(100);
+    //test_adc_read();
     //test_JS_driver();
 }
+//TC_CV0 s876 posisjon kan leses her ifra 32bit ord
+//POSEN bit in TC_BMR -> position prcessesd on ch 0, # motorrevolutions read at can 1
+//

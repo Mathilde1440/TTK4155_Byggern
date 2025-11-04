@@ -15,6 +15,8 @@ SOURCE_FILES = \
 	io_board_driver_node_2.c \
 	can_interrupt.c \
 	pwm_driver.c \
+	adc.c \
+	encoder.c \
 #	../path_to/uart.c \
 #   filename1.c \
 #   filename2.c \
