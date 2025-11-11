@@ -17,6 +17,9 @@ SOURCE_FILES = \
 	pwm_driver.c \
 	adc.c \
 	encoder.c \
+	PI_controller.c \
+	motor_driver.c \
+	solenoid_driver.c
 #	../path_to/uart.c \
 #   filename1.c \
 #   filename2.c \

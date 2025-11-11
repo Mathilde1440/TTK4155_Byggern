@@ -12,6 +12,8 @@ typedef struct {
     int8_t X_JS_PRC;
     int8_t Y_JS_PRC;
 
+    int8_t JS_Button_pressed;
+
 } IO_BOARD;
 
 typedef enum {

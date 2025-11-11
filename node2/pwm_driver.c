@@ -74,14 +74,14 @@ void calulate_and_set_DC(int8_t direction_PRC){
     {}
 
     uint32_t DC = -6* direction_PRC + 1500;
-    printf("DC clac : %i \n\r", DC);
+    //printf("DC clac : %i \n\r", DC);
     set_DC(DC);
 }
 
 void set_DC(uint32_t duty_cycle){
 
     uint32_t clamped_dc = clamp_signal(duty_cycle, PWM_D_MIN, PWM_D_MAX);
-    printf("DC clamp : %i \n\r", clamped_dc);
+    //printf("DC clamp : %i \n\r", clamped_dc);
     REG_PWM_CDTY1 = PWM_SERVO_PERIOD - duty_cycle;
 
 }

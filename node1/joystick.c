@@ -258,6 +258,7 @@ void encode_JS_direction(IO_BOARD* obj, CAN_MESSAGE_FRAME* msg)
 
     msg->data[0] = obj->X_JS;
     msg->data[1] = obj->Y_JS;
+    msg->data[3] = obj->JS_button_pressed;
 
 }
 
@@ -265,6 +266,7 @@ void test_JS_driver(IO_BOARD* obj, CAN_MESSAGE_FRAME* msg)
 {
 
     encode_JS_direction(obj, msg);
+    obj->JS_button_pressed = JS_button_pressed();
     CAN_transmit(msg); 
 
 }

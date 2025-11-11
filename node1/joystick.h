@@ -26,6 +26,8 @@ typedef struct {
     int8_t X_TP_PRC;
     int8_t Y_TP_PRC;
 
+    int8_t JS_button_pressed;
+
 
 } IO_BOARD;
 

@@ -108,6 +108,9 @@ IO_BOARD transform_CAN_msg_to_IO_BOARD_obj(CAN_MESSAGE* msg, IO_BOARD* obj)
 
     obj->Y_JS = msg->data[1]; 
 
+    obj->JS_Button_pressed = msg->data[3];
+
+
 
     convert_position_percent(obj);
 
