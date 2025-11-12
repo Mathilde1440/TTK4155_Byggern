@@ -11,6 +11,7 @@
 #include "PI_controller.h"
 #include "motor_driver.h"
 #include "solenoid_driver.h"
+#include "play_game.h"
 
 
 
@@ -59,22 +60,23 @@ int main()
 
 
     //test_keep_score();
-    while(1) {
+    //while(1) {
     //recieve_io_obj(&obj_1, &obj_2);
     //printf("hei");
+
+
+
+
     
-
-
-
-    
-    int32_t enc_pos = read_encoder_pos();
-    test_PI_controller(&obj_1, &obj_2);
+    //int32_t enc_pos = read_encoder_pos();
+    play_game();
+    //test_PI_controller(&obj_1, &obj_2);
     //printf("Encoder pos: %i \n\r", enc_pos);
     //test_servo_driver();
     //test_counter();
     //test_keep_score();
     //set_speed_and_direction_2(-50);
-    }
+    //}
     
 
     //test_servo_driver();

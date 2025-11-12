@@ -239,7 +239,7 @@ void test_PI_controller(IO_BOARD* obj_1, IO_BOARD* obj_2){
     PI_CONT dir_obj_1;
     PI_CONT dir_obj_2;
 
-    double K_p = 4;
+    double K_p = 6;
     double K_i = 0.5;
 
 
@@ -274,7 +274,7 @@ void test_PI_controller(IO_BOARD* obj_1, IO_BOARD* obj_2){
 
             if(obj_1->JS_Button_pressed)
             {
-                button_flag =1;
+                button_flag = 1;
             }
 
             int rest = solenoid_activate(button_flag);

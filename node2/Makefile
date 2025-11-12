@@ -19,7 +19,8 @@ SOURCE_FILES = \
 	encoder.c \
 	PI_controller.c \
 	motor_driver.c \
-	solenoid_driver.c
+	solenoid_driver.c\
+	play_game.c\
 #	../path_to/uart.c \
 #   filename1.c \
 #   filename2.c \

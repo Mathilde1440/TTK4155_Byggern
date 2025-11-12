@@ -6,6 +6,7 @@
 
 void convert_position_percent(IO_BOARD* IO_BOARD_obj)
 {
+    int dead_zone_y = 50;
 
     double a_JS = (100.0/87.0);
     double b_JS = (-15800.0/87.0);
@@ -44,6 +45,12 @@ void convert_position_percent(IO_BOARD* IO_BOARD_obj)
             IO_BOARD_obj->Y_JS_PRC = 100;
 
             }
+        
+    }
+
+        if (abs(IO_BOARD_obj->Y_JS_PRC) < dead_zone_y)
+    {
+            IO_BOARD_obj->Y_JS_PRC = 0;
         
     }
 }
