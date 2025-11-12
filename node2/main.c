@@ -57,9 +57,13 @@ int main()
     motor_init();
     solenoid_init();
 
+
     //test_keep_score();
     while(1) {
     //recieve_io_obj(&obj_1, &obj_2);
+    //printf("hei");
+    
+
 
 
     

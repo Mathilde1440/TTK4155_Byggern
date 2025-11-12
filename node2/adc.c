@@ -5,6 +5,9 @@
 
 int count_flag = 0; //prevents point dupication when the ball is in the goal zone
 
+
+
+
 void adc_init()
 {
    
@@ -37,6 +40,11 @@ uint16_t adc_read(){
     uint16_t data = ADC->ADC_CDR[0];
     return data; // returns entire data register for channel 1
 }
+
+
+
+
+
 
 uint16_t keep_score(uint16_t old_score)
 {

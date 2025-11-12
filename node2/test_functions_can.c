@@ -8,6 +8,8 @@
 #include "encoder.h"
 #include "solenoid_driver.h"
 
+#include "adc.h"
+
 void print_message_object_node_2(CAN_MESSAGE* message)
 
 {
@@ -227,6 +229,8 @@ void recieve_io_obj(IO_BOARD* obj_1, IO_BOARD* obj_2){
 
 void test_PI_controller(IO_BOARD* obj_1, IO_BOARD* obj_2){
 
+    int score = 0;
+
     int button_flag;
 
     CAN_MESSAGE message_1;
@@ -235,8 +239,8 @@ void test_PI_controller(IO_BOARD* obj_1, IO_BOARD* obj_2){
     PI_CONT dir_obj_1;
     PI_CONT dir_obj_2;
 
-    double K_p = 0.6;
-    double K_i = 0.2;
+    double K_p = 4;
+    double K_i = 0.5;
 
 
     while (1)
@@ -275,6 +279,9 @@ void test_PI_controller(IO_BOARD* obj_1, IO_BOARD* obj_2){
 
             int rest = solenoid_activate(button_flag);
             button_flag = 0;
+
+            score = keep_score(score);
+            printf("Scor is: %i \n\r", score);
             
 
             
