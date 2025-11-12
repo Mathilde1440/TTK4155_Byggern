@@ -16,3 +16,6 @@ void test_ard(){
     PIOB->PIO_CODR = PIO_CODR_P13; //sett lav
     //PIOB->PIO_SODR = (1u << 13); //set høy
 }
+
+
+//heihei
