@@ -59,16 +59,7 @@ void CAN_transmit(CAN_MESSAGE_FRAME* message){
 
     uint8_t reg = CAN_controller_read(MCP_TXB0CTRL);
 
-    //if (reg & (1  << 3)){
-    //    if ( reg & (1 << 4 )){
-    //        printf("CAN error: msg tected \n\r");
-    //    }
-    //    else if (reg & (1  << 5))
-    //    {
-    //        printf("CAN error: msg lost \n\r");
-    //    }
 
-    //}
 }
 
 
@@ -331,9 +322,7 @@ void test_CAN_transmitt_and_recieve_2()
     CAN_recieve(&message_1_res);
     uint8_t var = CAN_controller_read(MCP_TXB0CTRL) & (1 << 3);
 
-    while (CAN_controller_read(MCP_TXB0CTRL) & (1 << 3)){
-        printf("TEXREQ not clear");
-    };
+
 
     _delay_ms(100);
     print_message_object(&message_1, &message_1_res);

@@ -329,3 +329,39 @@ void test_PI_controller(IO_BOARD* obj_1, IO_BOARD* obj_2){
     for (int i = 0; i < 10000; i++)
     {}
 }
+
+void test_can_transmitt()
+{
+
+    while (1){
+    CAN_MESSAGE msg;
+
+    msg.id = 0x001;
+
+    msg.data_length = 8;
+
+    msg.data[0]= 9;
+    msg.data[1]= 1;
+    msg.data[2]= 3;
+    msg.data[3]= 4;
+    msg.data[4]= 5;
+    msg.data[5]= 6;
+    msg.data[6]= 7;
+    msg.data[7]= 8;
+    printf("Data 0 : %i \n\r",msg.data[0] );
+
+    int failure  = can_send(&msg,0);
+
+
+    if (failure){
+        printf("Failed to send");
+    }
+
+        for (int i = 0; i < 10000; i++)
+    {}
+
+    
+
+    }
+
+}

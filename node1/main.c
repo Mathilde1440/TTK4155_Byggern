@@ -15,6 +15,7 @@
 #include "oled.h"
 #include "menu_interface.h"
 #include "CAN_controller.h"
+#include "gameplay.h"
 
 #include <util/delay.h>
 
@@ -29,6 +30,9 @@
 
 
 int main(void) {
+
+   // printf("Hei\n\r");
+
     ADC_read(0x0000);
     USART_Init(MYUBRR);
     SRAM_init();
@@ -38,6 +42,8 @@ int main(void) {
     oled_reset();
 
     CAN_init(MODE_NORMAL);
+
+    oled_anti_clean();
     //test_CAN_transmitt_and_recieve();
     //test_CAN_transmitt_and_recieve_2();
     //CAN_controller_reset();
@@ -53,10 +59,42 @@ int main(void) {
     //test_CAN_transmitt_to_node_2();
     //test_CAN_transmitt_to_node_2();
 
+    int lives = 8;
+
+    int count = 0;
+
+
+
+
     while(1){
+
+        count++;
+
+        //if (count < )
+
+        oled_write_string("Spill et Spill", 4, 30);
+
+
+        //if (count > 1000){
+
+
+
+        //}
+
+        
+        
+
 
         IO_BOARD obj = read_analog_values_dir_IO();
         CAN_MESSAGE_FRAME msg;
+
+
+        lives = recieve_lives();
+
+
+        printf("lives %i \n\r", lives);
+
+        
 
 
 

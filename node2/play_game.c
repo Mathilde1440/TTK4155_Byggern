@@ -28,9 +28,12 @@ void transmitt_lives(){
    
     CAN_MESSAGE message_1;
 
-    message_1.id = 0x001;
+    message_1.id = 0x100;
     message_1.data_length = 8;
     message_1.data[0] = count_lives;
+
+
+    printf("lives %i", message_1.data[0]);
 
 
 
@@ -124,6 +127,8 @@ void run_motor(IO_BOARD* obj_1, IO_BOARD* obj_2){
 
     double dc= PI_controller(K_p, K_i, p_ref, encoder_position, &dir_obj_1);
 
+    printf("dc: %f \n\r", dc);
+
 
     set_speed_and_direction_2(abs(dc*100),dir_obj_1.dir);
 }
@@ -135,8 +140,11 @@ void rund_motor_board(IO_BOARD* obj_1, IO_BOARD* obj_2){
 
 }
 void shoot_ball(IO_BOARD* obj_1, IO_BOARD* obj_2){
-        if(obj_1->JS_Button_pressed)
+
+    
+    if(obj_1->JS_Button_pressed==1)
     {
+        printf("Button %i \n\r",  obj_1->JS_Button_pressed);
         button_flag = 1;
     }
 
@@ -204,6 +212,8 @@ void play_game(){
 
 
     while(1){
+
+        //printf("hei\n\r");
        
 
 
@@ -224,6 +234,10 @@ void play_game(){
     print_game_score();
 
     set_game_over();
+
+    //test_can_transmitt();
+
+    //transmitt_lives();
 
 
 

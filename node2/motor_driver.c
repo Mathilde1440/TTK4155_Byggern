@@ -51,7 +51,7 @@ void motor_init()
 void set_speed_and_direction_2(double DC, MOTOR_DIRECTION dir)
 {
 
-    int DC_MAX = 60;
+    int DC_MAX = 100;
 
     if (dir == M_LEFT){
         set_motor_direction(M_LEFT);

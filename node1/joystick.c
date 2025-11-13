@@ -29,10 +29,7 @@ IO_BOARD read_analog_values_dir_IO()
     IO_BOARD_obj.X_TP = array[2];
     IO_BOARD_obj.X_JS = array[3];
 
-    //uint8_t *a = ADC_read_testing();
-    //printf("_other_fubction %d \n", a);
-    //
-    //printf("Joystick_X: %d Joystick_Y: %d Tuchpad_X: %d Tuchpad_Y: %d \n\r", IO_BOARD_obj.X_JS,IO_BOARD_obj.Y_JS,IO_BOARD_obj.X_TP,IO_BOARD_obj.Y_TP);
+
 
 
     return IO_BOARD_obj;
@@ -180,26 +177,7 @@ void test_function_JS(JOYSTICK_DIRECTION direction){
 
    
 
-    if ( direction == UP){
-
-        printf( "Direction is UP \n\r");
-    }
-    if ( direction == DOWN){
-
-        printf( "Direction is DOWN \n\r");
-    }
-    if ( direction == LEFT){
-
-        printf( "Direction is LEFT \n\r");
-    }
-    if ( direction == RIGHT){
-
-        printf( "Direction is RIGHT \n\r");
-    }
-    if ( direction == NEUTRAL){
-
-        printf( "Direction is Neutral \n\r");
-    }
+    
 
 }
 
@@ -207,26 +185,6 @@ void test_function_TP(JOYSTICK_DIRECTION direction){
 
    
 
-    if ( direction == UP){
-
-        printf( "Direction is UP \n\r");
-    }
-    if ( direction == DOWN){
-
-        printf( "Direction is DOWN \n\r");
-    }
-    if ( direction == LEFT){
-
-        printf( "Direction is LEFT \n\r");
-    }
-    if ( direction == RIGHT){
-
-        printf( "Direction is RIGHT \n\r");
-    }
-    if ( direction == NEUTRAL){
-
-        printf( "Direction is Neutral \n\r");
-    }
 
 }
 

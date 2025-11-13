@@ -17,6 +17,8 @@ void recieve_io_obj(IO_BOARD* obj_1, IO_BOARD* obj_2);
 void test_PI_controller(IO_BOARD* obj_1, IO_BOARD* obj_2);
 
 
+void test_can_transmitt();
+
 
 
 #endif 
