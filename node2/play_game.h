@@ -17,6 +17,12 @@
 //recive function for CAN, only alter obj
 void transmitt_lives(); 
 
+void transmitt_lives_to_node_1();
+
+
+void handle_start_of_game_score_rest();
+
+
 
 void recieve_IO_Board_obj(IO_BOARD* obj_1, IO_BOARD* obj_2); //add a variable to IO_BOARD which tells if the object has been alterd this run. 
 void process_IO_BOARD_obj(IO_BOARD* obj_1, IO_BOARD* obj_2);
@@ -42,11 +48,15 @@ void keep_game_score();
 void print_game_score();
 
 void set_game_over();
+void reset_game(IO_BOARD* obj_1, IO_BOARD* obj_2);
+
+void handle_reset(IO_BOARD* obj_1,IO_BOARD* obj_2);
+
 
 
 //game_over_function?
 
-void set_game_over();
+//void set_game_over();
 
 //handle mailboxes
 

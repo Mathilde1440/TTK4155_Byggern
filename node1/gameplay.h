@@ -26,6 +26,10 @@ void game_render_other_menu_items(char* menu_item, uint8_t line);
 
 void run_menu();
 
+void back_to_menue(IO_BOARD* obj, int lives);
+
+int return_reset_request();
+
 
 void oled_render_lives(int lives);
 

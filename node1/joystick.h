@@ -27,6 +27,7 @@ typedef struct {
     int8_t Y_TP_PRC;
 
     int8_t JS_button_pressed;
+    int8_t reset_game;
 
 
 } IO_BOARD;

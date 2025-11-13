@@ -77,7 +77,7 @@ int main()
     play_game();
     //transmitt_lives();
 
-    test_can_transmitt();
+    //test_can_transmitt();
 
 
     //test_PI_controller(&obj_1, &obj_2);

@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include "labdag1.h"
 #include "labdag2.h"
+#include "gameplay.h"
 
 
 
@@ -218,6 +219,8 @@ void encode_JS_direction(IO_BOARD* obj, CAN_MESSAGE_FRAME* msg)
     msg->data[1] = obj->Y_JS;
     msg->data[3] = obj->JS_button_pressed;
 
+    msg->data[4] = obj->reset_game;
+
 }
 
 void test_JS_driver(IO_BOARD* obj, CAN_MESSAGE_FRAME* msg)
@@ -225,6 +228,9 @@ void test_JS_driver(IO_BOARD* obj, CAN_MESSAGE_FRAME* msg)
 
     encode_JS_direction(obj, msg);
     obj->JS_button_pressed = JS_button_pressed();
+    obj->reset_game = return_reset_request();
+
+    //printf("Reset resquest : %i \n\r", obj->reset_game);
     CAN_transmit(msg); 
 
 }

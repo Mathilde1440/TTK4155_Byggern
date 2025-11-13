@@ -59,7 +59,7 @@ int main(void) {
     //test_CAN_transmitt_to_node_2();
     //test_CAN_transmitt_to_node_2();
 
-    int lives = 8;
+    int lives = 5;
 
     int count = 0;
 
@@ -72,7 +72,7 @@ int main(void) {
 
         //if (count < )
 
-        oled_write_string("Spill et Spill", 4, 30);
+        //oled_write_string("Spill et Spill", 4, 30);
 
 
         //if (count > 1000){
@@ -88,11 +88,23 @@ int main(void) {
         IO_BOARD obj = read_analog_values_dir_IO();
         CAN_MESSAGE_FRAME msg;
 
+        int recieved_lives = recieve_lives();
+        //printf("Recieved message: %i\n\r", recieve_lives);
+        if (recieved_lives != 40)
+        {
+                lives = recieved_lives;
+                oled_anti_clean();
 
-        lives = recieve_lives();
+        }
+    
 
 
         printf("lives %i \n\r", lives);
+
+        oled_render_lives(lives);
+
+
+        back_to_menue(&obj, lives);
 
         
 

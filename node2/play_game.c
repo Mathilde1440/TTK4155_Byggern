@@ -13,7 +13,11 @@
 #include "adc.h"
 
 int button_flag = 0;
-int count_lives = 8;
+int count_lives = 5;
+int reset_flag = 0;
+int change_in_lives_flag  =0;
+
+int first_loop_flag = 1;
 
 int game_over = 0;
 
@@ -28,7 +32,7 @@ void transmitt_lives(){
    
     CAN_MESSAGE message_1;
 
-    message_1.id = 0x100;
+    message_1.id = 0x001;
     message_1.data_length = 8;
     message_1.data[0] = count_lives;
 
@@ -37,7 +41,41 @@ void transmitt_lives(){
 
 
 
-    int sucess = can_send(&message_1, 2);
+    int sucsess = can_send(&message_1, 0);
+
+    for (int i = 0; i < 10000; i++)
+    {}
+}
+
+void transmitt_lives_to_node_1()
+{
+    if (change_in_lives_flag ==1)
+    {
+
+        transmitt_lives(); //transmitt twice to ensure it does not miss
+        transmitt_lives();
+
+        change_in_lives_flag = 0;
+
+    }
+
+}
+
+
+void handle_start_of_game_score_rest()
+{
+
+        if (first_loop_flag)
+        {
+
+            transmitt_lives();
+            transmitt_lives();
+
+            first_loop_flag = 0;
+
+        }
+
+
 }
 
 
@@ -127,7 +165,7 @@ void run_motor(IO_BOARD* obj_1, IO_BOARD* obj_2){
 
     double dc= PI_controller(K_p, K_i, p_ref, encoder_position, &dir_obj_1);
 
-    printf("dc: %f \n\r", dc);
+    //printf("dc: %f \n\r", dc);
 
 
     set_speed_and_direction_2(abs(dc*100),dir_obj_1.dir);
@@ -163,6 +201,8 @@ void keep_game_score(){
     {
         adc_flag = 1;
         count_lives--;
+        change_in_lives_flag = 1;
+   
     }
 
     else
@@ -206,6 +246,32 @@ void set_game_over()
 
 }
 
+void reset_game(IO_BOARD* obj_1, IO_BOARD* obj_2)
+{
+    if (reset_flag == 1)
+    {
+        game_over = 0;
+        count_lives = 5;
+        first_loop_flag = 1;
+        reset_flag = 0;
+    }
+}
+
+void handle_reset(IO_BOARD* obj_1,IO_BOARD* obj_2)
+{
+
+    printf("Reset_request %i",obj_1->reset_game );
+
+    if (obj_1->reset_game == 1)
+    {
+        reset_flag = 1;
+        reset_game(obj_1,obj_2);
+    }
+
+}
+
+
+
 
 void play_game(){
 
@@ -219,6 +285,7 @@ void play_game(){
 
     IO_BOARD obj_1;
     IO_BOARD obj_2;
+    handle_start_of_game_score_rest();
 
 
     recieve_IO_Board_obj(&obj_1, &obj_2);
@@ -233,7 +300,15 @@ void play_game(){
     keep_game_score();
     print_game_score();
 
+    transmitt_lives_to_node_1();
+
     set_game_over();
+
+    handle_reset(&obj_1, &obj_2);
+
+
+
+
 
     //test_can_transmitt();
 
