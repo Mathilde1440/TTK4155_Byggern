@@ -12,7 +12,7 @@ uint8_t current_color = 0;
 
 
 
-// direct copy of the handout
+// direct copy of the handout, can be found referenced i lab lecture 2. slide 31. Cannot find the handout any more
 
 void oled_init()
 {
