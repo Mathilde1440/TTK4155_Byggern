@@ -135,11 +135,11 @@ void write_DATA(uint8_t data){
 
 }
 
-
+//this function is never used and never needed
 void set_addressing_mode(ADDRESSING_MODES mode){ //This is probobly not functional, can be fixed if we actually need to change the mode later
     if (mode == HORIZONTAL)
     {
-        write_COMMAND_1arg(0x20,00);
+        write_COMMAND_1arg(0x20,00); 
     }
     else if( mode == VERTICAL)
     {
@@ -160,7 +160,7 @@ void set_addressing_mode(ADDRESSING_MODES mode){ //This is probobly not function
 
 void oled_goto_line(uint8_t line)
 {
-    uint8_t wrap_line = line;
+    uint8_t wrap_line = line; // creates a wraping funnction
     if (line > 7)
     {
         wrap_line = line - 7;
@@ -185,10 +185,10 @@ void oled_goto_column(uint8_t column)
 
     //{
         current_column = wrap_column ;
-        int start = wrap_column  % 16;
+        int start = wrap_column  % 16; 
         int end = wrap_column  / 16;
-        write_COMMAND(0x00 | start);
-        write_COMMAND(0x10 | end);
+        write_COMMAND(0x00 | start); // retrieves the 4 MSB
+        write_COMMAND(0x10 | end); //retriev the  LSB
     //}
 
 }
@@ -277,10 +277,10 @@ void oled_write_string(char* string, uint8_t line,  uint8_t column){
     //uint8_t char_to_print = *string-32;
    
     while(*string){
-        uint8_t increment = *string++;
+        uint8_t increment = *string++; //retrieves one charater and moves the pointer
     
-        if ((increment>= 32) && (increment <= 127)){
-                uint8_t char_to_print = increment-32;
+        if ((increment>= 32) && (increment <= 127)){ // checkes if the sign is valid in tyhe ASCII table
+                uint8_t char_to_print = increment-32; //calulate character index
             switch (current_font_size)
             {
             case 4:
@@ -288,10 +288,10 @@ void oled_write_string(char* string, uint8_t line,  uint8_t column){
                 for(int i = 0; i < 4; i++)
                 {
                     
-                    write_DATA(~pgm_read_byte(&font4[char_to_print][i]));
+                    write_DATA(~pgm_read_byte(&font4[char_to_print][i]));  //inverts the string
 
                 }
-                 current_column += (4+1);
+                 current_column += (4+1); //move text cursor
                 break;
             case 5:
             oled_pos(line, current_column);

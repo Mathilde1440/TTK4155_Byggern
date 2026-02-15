@@ -14,7 +14,7 @@ void CAN_init(uint8_t mode){
     CAN_controller_change_mode(MODE_CONFIG);
 
     //Bit timing
-
+//Final timin: BRP = 3, PROPAG = 2, PHSEG1 = 5, PHSEG2 = 5, SJW = 3, BLT mode 1
     CAN_controller_write(MCP_CNF1, 0b11000011); 
     CAN_controller_write(MCP_CNF2, 0b10101010); 
     CAN_controller_write(MCP_CNF3, 0b00000101); 

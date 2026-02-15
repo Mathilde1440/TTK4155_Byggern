@@ -32,7 +32,7 @@ void motor_init()
     REG_PWM_CDTY0 = PWM_PERIOD-PWM_PERIOD/STILL;//set duty cyckle et 1.5 ms (center position), as decribed as prefered in the task (register description at s. 1046 in the datasheet) // Verdien er trukket fra MCK for å invertere duty-cyle 
     //REG_PWM_CDTYUPD0 = (PWM_PERIOD*)/100u;
     uint32_t c = (PWM_PERIOD * (100-STILL_PRC)) / 100u;
-    REG_PWM_CDTYUPD0 = c; 
+    REG_PWM_CDTYUPD0 = c; // writing to the DC uppdate- register ensures smooth transitions, andf does not interrup the running PWM signal imediatly
 
 
 
